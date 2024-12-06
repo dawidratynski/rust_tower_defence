@@ -44,7 +44,7 @@ fn tower_shooting(
                             .insert(Transform::from_translation(tower.bullet_spawn_offset))
                             .insert(Bullet {
                                 lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
-                                direction: (closest_enemy.translation() - transform.translation)
+                                direction: (closest_enemy.translation() - bullet_spawn_point)
                                     .normalize(),
                                 speed: 1500.0,
                                 hitbox_radius: 20.0,

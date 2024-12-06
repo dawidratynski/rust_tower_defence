@@ -18,8 +18,8 @@ impl Plugin for CameraPlugin {
 
 fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2d).insert(Transform::from_xyz(
-        WINDOW_WIDTH / 2.0,
-        WINDOW_HEIGHT / 2.0,
+        WINDOW_WIDTH / 2.0 + TILE_SIZE / 2.0,
+        WINDOW_HEIGHT / 2.0 + TILE_SIZE / 2.0,
         0.0,
     ));
 }
