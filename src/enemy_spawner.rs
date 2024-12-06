@@ -32,8 +32,8 @@ fn enemy_spawn(
                     5.0,
                 ))
                 .insert(Enemy {
-                    speed: 50.0,
-                    health: 5.0,
+                    speed: 150.0,
+                    health: 15.0,
                 });
         }
     }

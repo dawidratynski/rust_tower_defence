@@ -1,30 +1,23 @@
+pub use bevy::prelude::*;
+
 use bevy::color::palettes::css;
 use bevy::math::FloatOrd;
-use bevy::prelude::*;
-
-pub const SPRITE_RESOLUTION: u16 = 16;
-pub const SPRITE_SCALE: u16 = 4;
-pub const TILE_SIZE: f32 = SPRITE_RESOLUTION as f32 * SPRITE_SCALE as f32;
-
-pub const MAP_HEIGHT: u32 = 8;
-pub const MAP_WIDTH: u32 = 12;
-
-pub const WINDOW_HEIGHT: f32 = MAP_HEIGHT as f32 * TILE_SIZE as f32;
-pub const WINDOW_WIDTH: f32 = MAP_WIDTH as f32 * TILE_SIZE as f32;
-
-pub const GAME_WINDOW_TITLE: &str = "Game prototye v1";
 
 mod bullet;
+mod constants;
 mod enemy;
 mod enemy_spawner;
 mod map;
 mod tower;
+mod camera;
 
 pub use bullet::*;
+pub use constants::*;
 pub use enemy::*;
 pub use enemy_spawner::*;
 pub use map::*;
 pub use tower::*;
+pub use camera::*;
 
 fn main() {
     App::new()
@@ -42,23 +35,11 @@ fn main() {
                     ..default()
                 }),
         )
-        .add_systems(Startup, setup)
+        .add_plugins(CameraPlugin)
+        .add_plugins(MapPlugin)
         .add_plugins(TowerPlugin)
         .add_plugins(BulletPlugin)
         .add_plugins(EnemyPlugin)
         .add_plugins(EnemySpawnerPlugin)
         .run();
-}
-
-fn setup(mut commands: Commands) {
-    spawn_camera(&mut commands);
-    spawn_basic_scene(&mut commands);
-}
-
-fn spawn_camera(commands: &mut Commands) {
-    commands.spawn(Camera2d).insert(Transform::from_xyz(
-        WINDOW_WIDTH / 2.0,
-        WINDOW_HEIGHT / 2.0,
-        0.0,
-    ));
 }

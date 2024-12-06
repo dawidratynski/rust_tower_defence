@@ -46,9 +46,9 @@ fn tower_shooting(
                                 lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
                                 direction: (closest_enemy.translation() - transform.translation)
                                     .normalize(),
-                                speed: 500.0,
+                                speed: 1500.0,
                                 hitbox_radius: 20.0,
-                                damage: 4.0,
+                                damage: 2.5,
                                 pierce: 2,
                                 already_hit: vec![],
                             });
