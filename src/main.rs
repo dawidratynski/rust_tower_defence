@@ -3,21 +3,23 @@ pub use bevy::prelude::*;
 use bevy::color::palettes::css;
 use bevy::math::FloatOrd;
 
+mod base;
 mod bullet;
+mod camera;
 mod constants;
 mod enemy;
 mod enemy_spawner;
 mod map;
 mod tower;
-mod camera;
 
+pub use base::*;
 pub use bullet::*;
+pub use camera::*;
 pub use constants::*;
 pub use enemy::*;
 pub use enemy_spawner::*;
 pub use map::*;
 pub use tower::*;
-pub use camera::*;
 
 fn main() {
     App::new()
@@ -41,5 +43,6 @@ fn main() {
         .add_plugins(BulletPlugin)
         .add_plugins(EnemyPlugin)
         .add_plugins(EnemySpawnerPlugin)
+        .add_plugins(BasePlugin)
         .run();
 }
