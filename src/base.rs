@@ -17,7 +17,7 @@ fn base_collision(
     mut enemies: Query<(Entity, &Transform, &mut Enemy)>,
 ) {
     for base in &bases {
-        for (enemy_entity, enemy_transfrom, mut enemy_data) in &mut enemies{
+        for (enemy_entity, enemy_transfrom, mut enemy_data) in &mut enemies {
             enemy_data.health += 0.0001;
             if Vec2::distance(base.translation.xy(), enemy_transfrom.translation.xy()) < 10.0 {
                 // TODO: Decrease player health

@@ -32,10 +32,7 @@ fn spawn_basic_scene(mut commands: Commands) {
         });
 
     commands
-        .spawn(Sprite::from_color(
-            css::DARK_BLUE,
-            Vec2::splat(TILE_SIZE),
-        ))
+        .spawn(Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)))
         .insert(Transform::from_xyz(12.0 * TILE_SIZE, 5.0 * TILE_SIZE, 0.0))
         .insert(Base);
 
