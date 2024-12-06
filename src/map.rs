@@ -8,7 +8,7 @@ impl Plugin for MapPlugin {
     }
 }
 
-pub fn spawn_basic_scene(commands: &mut Commands) {
+fn spawn_basic_scene(mut commands: Commands) {
     commands
         .spawn(Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)))
         .insert(Transform::from_xyz(150.0, 100.0, 0.0))

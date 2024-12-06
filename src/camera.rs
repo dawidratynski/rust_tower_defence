@@ -1,5 +1,4 @@
 use crate::*;
-use bevy::prelude::*;
 
 pub struct CameraPlugin;
 
@@ -11,7 +10,7 @@ impl Plugin for CameraPlugin {
     }
 }
 
-fn spawn_camera(commands: &mut Commands) {
+fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2d).insert(Transform::from_xyz(
         WINDOW_WIDTH / 2.0,
         WINDOW_HEIGHT / 2.0,
@@ -20,4 +19,6 @@ fn spawn_camera(commands: &mut Commands) {
 }
 
 
-fn camera_control(){}
+fn camera_control(){
+
+}
