@@ -38,6 +38,7 @@ fn bullet_hit(
                 bullet_data.already_hit.push(enemy_entity);
                 bullet_data.pierce -= 1;
                 if bullet_data.pierce <= 0 {
+                    bullet_data.damage = 0.0;
                     commands.entity(bullet_entity).insert(Despawn);
                 }
             }

@@ -35,14 +35,14 @@ fn spawn_basic_scene(mut commands: Commands, mut tile_map: ResMut<TileMap>) {
             css::DARK_GOLDENROD,
             Vec2::splat(TILE_SIZE),
         ))
-        .insert(Transform::from_translation(from_tile(1, 5, 0.0)))
+        .insert(Transform::from_translation(vec3_from_tile(1, 5, 0.0)))
         .insert(EnemySpawner {
             spawn_timer: Timer::from_seconds(0.5, TimerMode::Repeating),
         });
 
     commands
         .spawn(Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)))
-        .insert(Transform::from_translation(from_tile(12, 5, 0.0)))
+        .insert(Transform::from_translation(vec3_from_tile(12, 5, 0.0)))
         .insert(Base);
 
     for x_tile in -100..100 {
@@ -54,7 +54,7 @@ fn spawn_basic_scene(mut commands: Commands, mut tile_map: ResMut<TileMap>) {
 
             let tile_id = commands
                 .spawn(tile_bundle)
-                .insert(Transform::from_translation(from_tile(
+                .insert(Transform::from_translation(vec3_from_tile(
                     x_tile, y_tile, -500.0,
                 )))
                 .id();

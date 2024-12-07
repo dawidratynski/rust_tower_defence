@@ -112,6 +112,15 @@ impl TowerType {
             ),
         }
     }
+
+    pub fn get_cost(&self) -> u32 {
+        match self {
+            TowerType::Basic => 10,
+            TowerType::Sniper => 30,
+            TowerType::Minigun => 50,
+            TowerType::Piercer => 15,
+        }
+    }
 }
 
 #[derive(Resource)]
@@ -130,7 +139,7 @@ pub fn spawn_tower(commands: &mut Commands, position: (i32, i32), tower_type: To
     let (sprite, tower) = tower_type.get_tower();
     commands
         .spawn((sprite, tower))
-        .insert(Transform::from_translation(from_tile(
+        .insert(Transform::from_translation(vec3_from_tile(
             position.0, position.1, 0.0,
         )))
         .id()
@@ -138,11 +147,11 @@ pub fn spawn_tower(commands: &mut Commands, position: (i32, i32), tower_type: To
 
 fn tower_shooting(
     mut commands: Commands,
-    mut towers: Query<(Entity, &mut Tower, &Transform)>,
+    mut towers: Query<(&mut Tower, &Transform)>,
     enemies: Query<&GlobalTransform, With<Enemy>>,
     time: Res<Time>,
 ) {
-    for (tower_entity, mut tower, transform) in &mut towers {
+    for (mut tower, transform) in &mut towers {
         tower.shooting_timer.tick(time.delta());
         if tower.shooting_timer.just_finished() {
             let bullet_spawn_point = transform.translation + tower.bullet_spawn_offset;

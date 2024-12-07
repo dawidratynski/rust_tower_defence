@@ -15,7 +15,7 @@ impl Plugin for UIPlugin {
     }
 }
 
-fn spawn_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn spawn_ui(mut commands: Commands) {
     commands
         .spawn(Node {
             width: Val::Percent(100.0),
