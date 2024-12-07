@@ -1,13 +1,13 @@
 use crate::*;
 use rand::Rng;
 
-
 #[derive(Component)]
 pub struct Tower {
     pub shooting_timer: Timer,
     pub bullet_spawn_offset: Vec3,
     pub tower_type: TowerType,
     pub spread: f32,
+    pub range: f32,
 }
 
 #[derive(Component, Clone, Copy)]
@@ -28,6 +28,7 @@ impl TowerType {
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
+                    range: 300.0,
                 },
             ),
             TowerType::Sniper => (
@@ -37,6 +38,7 @@ impl TowerType {
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
+                    range: 50000.0,
                 },
             ),
             TowerType::Minigun => (
@@ -46,6 +48,7 @@ impl TowerType {
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.2,
+                    range: 300.0,
                 },
             ),
             TowerType::Piercer => (
@@ -55,6 +58,7 @@ impl TowerType {
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
+                    range: 1000.0,
                 },
             ),
         }
@@ -156,16 +160,23 @@ fn tower_shooting(
         if tower.shooting_timer.just_finished() {
             let bullet_spawn_point = transform.translation + tower.bullet_spawn_offset;
 
-            let closest_enemy = enemies.iter().min_by_key(|enemy_transform| {
-                FloatOrd(Vec3::distance(
-                    enemy_transform.translation(),
-                    bullet_spawn_point,
-                ))
-            });
+            let closest_enemy = enemies
+                .iter()
+                .filter(|enemy_transform| {
+                    Vec3::distance(enemy_transform.translation(), bullet_spawn_point) <= tower.range
+                })
+                .min_by_key(|enemy_transform| {
+                    FloatOrd(Vec3::distance(
+                        enemy_transform.translation(),
+                        bullet_spawn_point,
+                    ))
+                });
 
             if let Some(closest_enemy) = closest_enemy {
                 let direction = (closest_enemy.translation() - bullet_spawn_point).normalize();
-                let spread_direction = Quat::from_rotation_z(rand::thread_rng().gen_range(-tower.spread..=tower.spread));
+                let spread_direction = Quat::from_rotation_z(
+                    rand::thread_rng().gen_range(-tower.spread..=tower.spread),
+                );
 
                 commands
                     .spawn(tower.tower_type.get_bullet(spread_direction * direction))

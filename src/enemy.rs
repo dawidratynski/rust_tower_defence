@@ -11,8 +11,8 @@ pub struct Enemy {
 
 #[derive(Resource)]
 pub struct EnemyPath {
-    nodes: Vec<Vec2>
-} 
+    nodes: Vec<Vec2>,
+}
 
 pub struct EnemyPlugin;
 
@@ -25,16 +25,16 @@ impl Plugin for EnemyPlugin {
                     vec2_from_tile(1, 0),
                     vec2_from_tile(5, 0),
                     vec2_from_tile(5, 5),
-                    vec2_from_tile(12, 5)
-                ]
+                    vec2_from_tile(12, 5),
+                ],
             });
     }
 }
 
 fn enemy_movement(
-    mut enemies: Query<(&mut Enemy, &mut Transform)>, 
+    mut enemies: Query<(&mut Enemy, &mut Transform)>,
     path: Res<EnemyPath>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
     for (mut enemy, mut transform) in &mut enemies {
         let movement_distance = enemy.speed * time.delta_secs();
@@ -42,14 +42,17 @@ fn enemy_movement(
 
         if delta_to_goal.length() > movement_distance {
             transform.translation += delta_to_goal.normalize().extend(0.0) * movement_distance;
-        }
-        else if enemy.path_stage < path.nodes.len() as u32 - 1 {
+        } else if enemy.path_stage < path.nodes.len() as u32 - 1 {
             enemy.path_stage += 1;
         }
     }
 }
 
-fn enemy_death(mut commands: Commands, mut enemies: Query<(Entity, &mut Enemy)>, mut player: ResMut<Player>) {
+fn enemy_death(
+    mut commands: Commands,
+    mut enemies: Query<(Entity, &mut Enemy)>,
+    mut player: ResMut<Player>,
+) {
     for (entity, mut enemy) in &mut enemies {
         if enemy.health <= 0.0 {
             player.money += enemy.money_for_kill;
