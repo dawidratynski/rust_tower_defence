@@ -11,6 +11,7 @@ mod enemy;
 mod enemy_spawner;
 mod map;
 mod tower;
+mod ui;
 mod utils;
 
 pub use base::*;
@@ -21,6 +22,7 @@ pub use enemy::*;
 pub use enemy_spawner::*;
 pub use map::*;
 pub use tower::*;
+pub use ui::*;
 pub use utils::*;
 
 fn main() {
@@ -40,6 +42,7 @@ fn main() {
                 }),
         )
         .add_plugins(CameraPlugin)
+        .add_plugins(UIPlugin)
         .add_plugins(MapPlugin)
         .add_plugins(TowerPlugin)
         .add_plugins(BulletPlugin)

@@ -76,10 +76,11 @@ fn mouse_click_system(
     q_windows: Query<&Window, With<PrimaryWindow>>,
     camera: Query<(&Transform, &OrthographicProjection), With<Camera2d>>,
     mut tiles: Query<(&mut Sprite, &mut TileData)>,
+    interaction_query: Query<(&Interaction,), (Changed<Interaction>, With<Button>)>,
     tile_map: Res<TileMap>,
     mut commands: Commands,
 ) {
-    if !mouse_button_input.just_pressed(MouseButton::Left) {
+    if !mouse_button_input.just_pressed(MouseButton::Left) || !interaction_query.is_empty() {
         return;
     }
 
@@ -96,8 +97,7 @@ fn mouse_click_system(
             * (Vec2 {
                 x: -WINDOW_WIDTH / 2.0,
                 y: WINDOW_HEIGHT / 2.0,
-            }
-            + cursor_position_global_axis);
+            } + cursor_position_global_axis);
 
         let game_cursor_position = root_to_camera_offset
             + (camera_transform.rotation * Vec3::from((camera_to_cursor_offset, 0.0))).xy();
