@@ -1,17 +1,35 @@
+use bevy::utils::hashbrown::HashMap;
+
 use crate::*;
 
+#[derive(Bundle)]
+pub struct TileBundle {
+    pub sprite: Sprite,
+    pub tile_data: TileData,
+}
+
+#[derive(Component)]
+pub struct TileData {
+    pub empty: bool,
+}
+
 #[derive(Resource)]
-pub struct TileMap {}
+pub struct TileMap {
+    pub tile_map: HashMap<(i32, i32), Entity>,
+}
 
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_basic_scene);
+        app.insert_resource(TileMap {
+            tile_map: HashMap::new(),
+        })
+        .add_systems(Startup, spawn_basic_scene);
     }
 }
 
-fn spawn_basic_scene(mut commands: Commands) {
+fn spawn_basic_scene(mut commands: Commands, mut tile_map: ResMut<TileMap>) {
     commands
         .spawn(Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)))
         .insert(Transform::from_translation(from_tile(7, 4, 0.0)))
@@ -41,11 +59,19 @@ fn spawn_basic_scene(mut commands: Commands) {
 
     for x_tile in -100..100 {
         for y_tile in -100..100 {
-            commands
-                .spawn(Sprite::from_color(css::GRAY, Vec2::splat(TILE_SIZE * 0.8)))
+            let tile_bundle = TileBundle {
+                sprite: Sprite::from_color(css::GRAY, Vec2::splat(TILE_SIZE * 0.8)),
+                tile_data: TileData { empty: true },
+            };
+
+            let tile_id = commands
+                .spawn(tile_bundle)
                 .insert(Transform::from_translation(from_tile(
                     x_tile, y_tile, -500.0,
-                )));
+                )))
+                .id();
+
+            tile_map.tile_map.insert((x_tile, y_tile), tile_id);
         }
     }
 }

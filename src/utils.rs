@@ -10,7 +10,7 @@ pub fn from_tile(x: i32, y: i32, visibility: f32) -> Vec3 {
 
 pub fn get_tile(x: f32, y: f32) -> (i32, i32) {
     (
-        (x / TILE_SIZE).floor() as i32,
-        (y / TILE_SIZE).floor() as i32,
+        (x / TILE_SIZE + 0.5).floor() as i32,
+        (y / TILE_SIZE + 0.5).floor() as i32,
     )
 }
