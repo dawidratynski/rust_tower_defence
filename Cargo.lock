@@ -3465,6 +3465,7 @@ name = "rust_tower_defence"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "rand",
 ]
 
 [[package]]

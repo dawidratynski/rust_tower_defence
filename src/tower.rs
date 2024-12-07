@@ -1,33 +1,138 @@
 use crate::*;
+use rand::Rng;
+
 
 #[derive(Component)]
 pub struct Tower {
     pub shooting_timer: Timer,
     pub bullet_spawn_offset: Vec3,
+    pub tower_type: TowerType,
+    pub spread: f32,
 }
+
+#[derive(Component, Clone, Copy)]
+pub enum TowerType {
+    Basic,
+    Sniper,
+    Minigun,
+    Piercer,
+}
+
+impl TowerType {
+    fn get_tower(&self) -> (Sprite, Tower) {
+        match self {
+            TowerType::Basic => (
+                Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)),
+                Tower {
+                    shooting_timer: Timer::from_seconds(0.5, TimerMode::Repeating),
+                    bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
+                    tower_type: *self,
+                    spread: 0.0,
+                },
+            ),
+            TowerType::Sniper => (
+                Sprite::from_color(css::DARK_GREEN, Vec2::splat(TILE_SIZE)),
+                Tower {
+                    shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
+                    bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
+                    tower_type: *self,
+                    spread: 0.0,
+                },
+            ),
+            TowerType::Minigun => (
+                Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE)),
+                Tower {
+                    shooting_timer: Timer::from_seconds(0.01, TimerMode::Repeating),
+                    bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
+                    tower_type: *self,
+                    spread: 10.0,
+                },
+            ),
+            TowerType::Piercer => (
+                Sprite::from_color(css::DARK_CYAN, Vec2::splat(TILE_SIZE)),
+                Tower {
+                    shooting_timer: Timer::from_seconds(1.2, TimerMode::Repeating),
+                    bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
+                    tower_type: *self,
+                    spread: 0.0,
+                },
+            ),
+        }
+    }
+
+    fn get_bullet(&self, direction: Vec3) -> (Sprite, Bullet) {
+        match self {
+            TowerType::Basic => (
+                Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
+                Bullet {
+                    lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
+                    direction: direction,
+                    speed: 1500.0,
+                    hitbox_radius: 20.0,
+                    damage: 5.0,
+                    pierce: 1,
+                    already_hit: vec![],
+                },
+            ),
+            TowerType::Sniper => (
+                Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
+                Bullet {
+                    lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
+                    direction: direction,
+                    speed: 3000.0,
+                    hitbox_radius: 50.0,
+                    damage: 1000.0,
+                    pierce: 1,
+                    already_hit: vec![],
+                },
+            ),
+            TowerType::Minigun => (
+                Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
+                Bullet {
+                    lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
+                    direction: direction,
+                    speed: 1000.0,
+                    hitbox_radius: 20.0,
+                    damage: 1.0,
+                    pierce: 1,
+                    already_hit: vec![],
+                },
+            ),
+            TowerType::Piercer => (
+                Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
+                Bullet {
+                    lifetime_timer: Timer::from_seconds(10.0, TimerMode::Once),
+                    direction: direction,
+                    speed: 500.0,
+                    hitbox_radius: 50.0,
+                    damage: 5.0,
+                    pierce: 10,
+                    already_hit: vec![],
+                },
+            ),
+        }
+    }
+}
+
+#[derive(Resource)]
+pub struct SelectedTower(pub TowerType);
 
 pub struct TowerPlugin;
 
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, tower_shooting);
+        app.add_systems(Update, tower_shooting)
+            .insert_resource(SelectedTower(TowerType::Basic));
     }
 }
 
-pub fn spawn_tower(commands: &mut Commands, position: (i32, i32)) -> Entity {
+pub fn spawn_tower(commands: &mut Commands, position: (i32, i32), tower_type: TowerType) -> Entity {
+    let (sprite, tower) = tower_type.get_tower();
     commands
-        .spawn(Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)))
+        .spawn((sprite, tower))
         .insert(Transform::from_translation(from_tile(
             position.0, position.1, 0.0,
         )))
-        .insert(Tower {
-            shooting_timer: Timer::from_seconds(0.3, TimerMode::Repeating),
-            bullet_spawn_offset: Vec3 {
-                x: 0.0,
-                y: TILE_SIZE / 2.0,
-                z: 0.1,
-            },
-        })
         .id()
 }
 
@@ -50,26 +155,14 @@ fn tower_shooting(
             });
 
             if let Some(closest_enemy) = closest_enemy {
+                let direction = (closest_enemy.translation() - bullet_spawn_point).normalize();
+                let spread_direction = Quat::from_rotation_z(rand::thread_rng().gen_range(-tower.spread..tower.spread));
+
                 commands
-                    .entity(tower_entity)
-                    .with_children(|child_builder| {
-                        child_builder
-                            .spawn(Sprite::from_color(
-                                css::BLUE_VIOLET,
-                                Vec2::splat(TILE_SIZE * 0.25),
-                            ))
-                            .insert(Transform::from_translation(tower.bullet_spawn_offset))
-                            .insert(Bullet {
-                                lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
-                                direction: (closest_enemy.translation() - bullet_spawn_point)
-                                    .normalize(),
-                                speed: 1500.0,
-                                hitbox_radius: 20.0,
-                                damage: 2.5,
-                                pierce: 2,
-                                already_hit: vec![],
-                            });
-                    });
+                    .spawn(tower.tower_type.get_bullet(spread_direction * direction))
+                    .insert(Transform::from_translation(
+                        transform.translation + tower.bullet_spawn_offset,
+                    ));
             }
         }
     }

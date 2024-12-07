@@ -79,6 +79,7 @@ fn mouse_click_system(
     interaction_query: Query<(&Interaction,), (Changed<Interaction>, With<Button>)>,
     tile_map: Res<TileMap>,
     mut commands: Commands,
+    selected_tower: Res<SelectedTower>,
 ) {
     if !mouse_button_input.just_pressed(MouseButton::Left) || !interaction_query.is_empty() {
         return;
@@ -109,7 +110,7 @@ fn mouse_click_system(
             if tile_data.empty {
                 sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
                 tile_data.empty = false;
-                spawn_tower(&mut commands, tile_position);
+                spawn_tower(&mut commands, tile_position, selected_tower.0);
             }
         }
     }
