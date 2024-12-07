@@ -102,13 +102,15 @@ fn mouse_click_system(
         let game_cursor_position = root_to_camera_offset
             + (camera_transform.rotation * Vec3::from((camera_to_cursor_offset, 0.0))).xy();
 
-        let tile_id = tile_map.tile_map.get(&get_tile(game_cursor_position.x, game_cursor_position.y)).unwrap();
+        let tile_position = get_tile(game_cursor_position.x, game_cursor_position.y);
+        let tile_id = tile_map.tile_map.get(&tile_position).unwrap();
+
         if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
             if tile_data.empty {
                 sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
                 tile_data.empty = false;
+                spawn_tower(&mut commands, tile_position);
             }
         }
-        dbg!(game_cursor_position);
     }
 }

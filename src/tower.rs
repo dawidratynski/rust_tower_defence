@@ -14,6 +14,23 @@ impl Plugin for TowerPlugin {
     }
 }
 
+pub fn spawn_tower(commands: &mut Commands, position: (i32, i32)) -> Entity {
+    commands
+        .spawn(Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)))
+        .insert(Transform::from_translation(from_tile(
+            position.0, position.1, 0.0,
+        )))
+        .insert(Tower {
+            shooting_timer: Timer::from_seconds(0.3, TimerMode::Repeating),
+            bullet_spawn_offset: Vec3 {
+                x: 0.0,
+                y: TILE_SIZE / 2.0,
+                z: 0.1,
+            },
+        })
+        .id()
+}
+
 fn tower_shooting(
     mut commands: Commands,
     mut towers: Query<(Entity, &mut Tower, &Transform)>,
