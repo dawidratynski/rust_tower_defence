@@ -3,17 +3,33 @@ use crate::*;
 #[derive(Component)]
 pub struct EnemySpawner {
     pub spawn_timer: Timer,
+    pub power_scale: f32,
 }
 
 pub struct EnemySpawnerPlugin;
 
 impl Plugin for EnemySpawnerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, enemy_spawn);
+        app.add_systems(Update, enemy_spawn_system);
     }
 }
 
-fn enemy_spawn(
+fn spawn_enemy(
+    commands: &mut Commands,
+    transform: &Transform,
+    template: EnemyTemplate,
+    power_scale: f32,
+) {
+    commands
+        .spawn(Enemy::from_template(template, power_scale))
+        .insert(Transform::from_xyz(
+            transform.translation.x,
+            transform.translation.y,
+            5.0,
+        ));
+}
+
+fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
     time: Res<Time>,
@@ -21,23 +37,13 @@ fn enemy_spawn(
     for (mut spawner, transform) in &mut spawners {
         spawner.spawn_timer.tick(time.delta());
         if spawner.spawn_timer.just_finished() {
-            commands
-                .spawn(Sprite::from_color(
-                    css::LAWN_GREEN,
-                    Vec2::splat(TILE_SIZE * 0.4),
-                ))
-                .insert(Transform::from_xyz(
-                    transform.translation.x,
-                    transform.translation.y,
-                    5.0,
-                ))
-                .insert(Enemy {
-                    speed: 40.0,
-                    health: 100.0,
-                    base_damage: 1,
-                    money_for_kill: 5,
-                    path_stage: 0,
-                });
+            spawn_enemy(
+                &mut commands,
+                transform,
+                EnemyTemplate::Fast,
+                spawner.power_scale,
+            );
+            spawner.power_scale *= 1.1;
         }
     }
 }
