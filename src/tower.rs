@@ -45,7 +45,7 @@ impl TowerType {
                     shooting_timer: Timer::from_seconds(0.01, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
-                    spread: 10.0,
+                    spread: 0.2,
                 },
             ),
             TowerType::Piercer => (
@@ -156,7 +156,7 @@ fn tower_shooting(
 
             if let Some(closest_enemy) = closest_enemy {
                 let direction = (closest_enemy.translation() - bullet_spawn_point).normalize();
-                let spread_direction = Quat::from_rotation_z(rand::thread_rng().gen_range(-tower.spread..tower.spread));
+                let spread_direction = Quat::from_rotation_z(rand::thread_rng().gen_range(-tower.spread..=tower.spread));
 
                 commands
                     .spawn(tower.tower_type.get_bullet(spread_direction * direction))

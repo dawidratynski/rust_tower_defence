@@ -13,6 +13,7 @@ mod map;
 mod tower;
 mod ui;
 mod utils;
+mod despawn;
 
 pub use base::*;
 pub use bullet::*;
@@ -24,6 +25,7 @@ pub use map::*;
 pub use tower::*;
 pub use ui::*;
 pub use utils::*;
+pub use despawn::*;
 
 fn main() {
     App::new()
@@ -49,5 +51,6 @@ fn main() {
         .add_plugins(EnemyPlugin)
         .add_plugins(EnemySpawnerPlugin)
         .add_plugins(BasePlugin)
+        .add_plugins(DespawnPlugin)
         .run();
 }

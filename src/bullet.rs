@@ -38,7 +38,7 @@ fn bullet_hit(
                 bullet_data.already_hit.push(enemy_entity);
                 bullet_data.pierce -= 1;
                 if bullet_data.pierce <= 0 {
-                    commands.entity(bullet_entity).despawn_recursive();
+                    commands.entity(bullet_entity).insert(Despawn);
                 }
             }
         }
@@ -58,8 +58,8 @@ fn bullet_despawn(
 ) {
     for (entity, mut bullet) in &mut bullets {
         bullet.lifetime_timer.tick(time.delta());
-        if bullet.lifetime_timer.just_finished() {
-            commands.entity(entity).despawn_recursive();
+        if bullet.lifetime_timer.just_finished() && bullet.pierce > 0 {
+            commands.entity(entity).insert(Despawn);
         }
     }
 }

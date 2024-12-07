@@ -22,7 +22,7 @@ fn base_collision(
             if Vec2::distance(base.translation.xy(), enemy_transfrom.translation.xy()) < 10.0 {
                 // TODO: Decrease player health
                 // Set enemy damage to 0 to prevent multiple hits
-                commands.entity(enemy_entity).despawn_recursive();
+                commands.entity(enemy_entity).insert(Despawn);
             }
         }
     }

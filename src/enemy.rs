@@ -24,7 +24,7 @@ fn enemy_movement(mut enemies: Query<(&Enemy, &mut Transform)>, time: Res<Time>)
 fn enemy_death(mut commands: Commands, enemies: Query<(Entity, &Enemy)>) {
     for (entity, enemy) in &enemies {
         if enemy.health <= 0.0 {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).insert(Despawn);
         }
     }
 }
