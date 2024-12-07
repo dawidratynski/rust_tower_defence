@@ -7,25 +7,27 @@ mod base;
 mod bullet;
 mod camera;
 mod constants;
+mod despawn;
 mod enemy;
 mod enemy_spawner;
 mod map;
+mod player;
 mod tower;
 mod ui;
 mod utils;
-mod despawn;
 
 pub use base::*;
 pub use bullet::*;
 pub use camera::*;
 pub use constants::*;
+pub use despawn::*;
 pub use enemy::*;
 pub use enemy_spawner::*;
 pub use map::*;
+pub use player::*;
 pub use tower::*;
 pub use ui::*;
 pub use utils::*;
-pub use despawn::*;
 
 fn main() {
     App::new()
@@ -52,5 +54,6 @@ fn main() {
         .add_plugins(EnemySpawnerPlugin)
         .add_plugins(BasePlugin)
         .add_plugins(DespawnPlugin)
+        .add_plugins(PlayerPlugin)
         .run();
 }

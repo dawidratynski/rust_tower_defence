@@ -34,6 +34,9 @@ fn enemy_spawn(
                 .insert(Enemy {
                     speed: 40.0,
                     health: 100.0,
+                    base_damage: 1,
+                    money_for_kill: 5,
+                    path_stage: 0,
                 });
         }
     }
