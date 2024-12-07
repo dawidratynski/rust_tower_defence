@@ -147,7 +147,7 @@ fn update_player_stats_ui(
     mut money_text: Query<&mut Text, (With<MoneyDisplay>, Without<HealthDisplay>)>,
 ) {
     *(health_text.single_mut()) = format!("HP {}", player.health).into();
-    *(money_text.single_mut()) = format!("$ {}", player.money).into();
+    *(money_text.single_mut()) = format!("$  {}", player.money).into();
 }
 
 fn tower_button_system(
