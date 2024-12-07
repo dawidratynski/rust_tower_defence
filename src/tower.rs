@@ -85,7 +85,7 @@ impl TowerType {
                     direction: direction,
                     speed: 3000.0,
                     hitbox_radius: 50.0,
-                    damage: 1000.0,
+                    damage: 50.0,
                     pierce: 1,
                     already_hit: vec![],
                 },

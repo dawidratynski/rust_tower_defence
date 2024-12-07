@@ -22,6 +22,10 @@ fn base_collision(
             enemy_data.health += 0.0001;
             if Vec2::distance(base.translation.xy(), enemy_transfrom.translation.xy()) < 10.0 {
                 player.health -= enemy_data.base_damage;
+                if player.health <= 0 {
+                    eprint!("YOU LOST");
+                    unimplemented!();
+                }
                 enemy_data.base_damage = 0;
                 commands.entity(enemy_entity).insert(Despawn);
             }

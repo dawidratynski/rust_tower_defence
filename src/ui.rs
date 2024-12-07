@@ -124,14 +124,18 @@ fn spawn_ui(mut commands: Commands) {
                                 *tower_type,
                             ))
                             .with_child((
-                                Text::new(match tower_type {
-                                    TowerType::Basic => "Basic",
-                                    TowerType::Minigun => "Minigun",
-                                    TowerType::Piercer => "Pierce",
-                                    TowerType::Sniper => "Sniper",
-                                }),
+                                Text::new(format!(
+                                    "{:<8} {}",
+                                    match tower_type {
+                                        TowerType::Basic => "Basic",
+                                        TowerType::Minigun => "Minigun",
+                                        TowerType::Piercer => "Pierce",
+                                        TowerType::Sniper => "Sniper",
+                                    },
+                                    tower_type.get_cost(),
+                                )),
                                 TextFont {
-                                    font_size: 33.0,
+                                    font_size: 20.0,
                                     ..default()
                                 },
                                 TextColor(Color::srgb(0.9, 0.9, 0.9)),
