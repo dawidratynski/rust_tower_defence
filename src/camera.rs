@@ -1,3 +1,5 @@
+use bevy::window::PrimaryWindow;
+
 use crate::*;
 
 const CAMERA_SPEED: f32 = 500.0;
@@ -12,7 +14,8 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, spawn_camera)
-            .add_systems(Update, camera_control);
+            .add_systems(Update, camera_control)
+            .add_systems(Update, mouse_click_system);
     }
 }
 
@@ -65,5 +68,37 @@ fn camera_control(
         if camera_projection.scale < CAMERA_MIN_SCALE {
             camera_projection.scale = CAMERA_MIN_SCALE;
         }
+    }
+}
+
+fn mouse_click_system(
+    mouse_button_input: Res<ButtonInput<MouseButton>>,
+    q_windows: Query<&Window, With<PrimaryWindow>>,
+    camera: Query<(&Transform, &OrthographicProjection), With<Camera2d>>,
+    mut commands: Commands,
+) {
+    if !mouse_button_input.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    let (camera_transform, projection) = camera.single();
+
+    if let Some(cursor_position) = q_windows.single().cursor_position() {
+        let cursor_position_global_axis = Vec2 {
+            x: cursor_position.x,
+            y: -cursor_position.y,
+        };
+
+        let root_to_camera_offset = camera_transform.translation.xy();
+        let camera_to_cursor_offset = projection.scale
+            * (Vec2 {
+                x: -WINDOW_WIDTH / 2.0,
+                y: WINDOW_HEIGHT / 2.0,
+            }
+            + cursor_position_global_axis);
+
+        let game_cursor_position = root_to_camera_offset
+            + (camera_transform.rotation * Vec3::from((camera_to_cursor_offset, 0.0))).xy();
+        dbg!(game_cursor_position);
     }
 }

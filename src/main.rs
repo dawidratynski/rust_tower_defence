@@ -11,6 +11,7 @@ mod enemy;
 mod enemy_spawner;
 mod map;
 mod tower;
+mod utils;
 
 pub use base::*;
 pub use bullet::*;
@@ -20,6 +21,7 @@ pub use enemy::*;
 pub use enemy_spawner::*;
 pub use map::*;
 pub use tower::*;
+pub use utils::*;
 
 fn main() {
     App::new()
