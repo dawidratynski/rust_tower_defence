@@ -95,8 +95,8 @@ fn spawn_basic_scene(
             ),
             EnemyWave::new(
                 vec![
-                    EnemyWaveSegment::new(EnemyTemplate::Fast, 50, 0.5, 0.5, 10.0),
-                    EnemyWaveSegment::new(EnemyTemplate::Boss, 3, 5.0, 5.0, 10.0),
+                    EnemyWaveSegment::new(EnemyTemplate::Fast, 50, 0.5, 0.5, 0.1),
+                    EnemyWaveSegment::new(EnemyTemplate::Boss, 3, 5.0, 5.0, 0.1),
                 ],
                 50,
             ),

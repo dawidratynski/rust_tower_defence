@@ -91,9 +91,21 @@ fn enemy_spawn_system(
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
     time: Res<Time>,
     mut player: ResMut<Player>,
+    enemies: Query<(), With<Enemy>>,
 ) {
     for (mut spawner, transform) in &mut spawners {
         let wave_ix = spawner.wave_ix;
+
+        if wave_ix == spawner.waves.len() {
+            if enemies.is_empty() {
+                eprintln!("You won!");
+                unimplemented!();
+            }
+            else {
+                return;
+            }
+        }
+        
         let wave = &mut spawner.waves[wave_ix];
         for segment in &mut wave.segments {
             segment.segment_timer.tick(time.delta());
