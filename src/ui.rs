@@ -184,7 +184,9 @@ fn tower_button_system(
                     selected_tower_opt.0 = Some(*tower_type);
                     *color = PRESSED_BUTTON.into();
                     border_color.0 = SELECTED_TOWER_BORDER;
-                    for (button_entity, mut button_background, mut button_border) in &mut pressed_button_query {
+                    for (button_entity, mut button_background, mut button_border) in
+                        &mut pressed_button_query
+                    {
                         *button_background = NORMAL_BUTTON.into();
                         button_border.0 = Color::BLACK;
                         commands.entity(button_entity).remove::<PressedButton>();
