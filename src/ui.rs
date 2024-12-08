@@ -171,7 +171,7 @@ fn tower_button_system(
             Interaction::Pressed => {
                 *color = PRESSED_BUTTON.into();
                 border_color.0 = css::RED.into();
-                selected_tower.0 = *tower_type;
+                selected_tower.0 = Some(*tower_type);
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();

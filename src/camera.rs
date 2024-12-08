@@ -93,12 +93,14 @@ fn mouse_click_system(
     interaction_query: Query<(&Interaction,), (Changed<Interaction>, With<Button>)>,
     tile_map: Res<TileMap>,
     mut commands: Commands,
-    selected_tower: Res<SelectedTower>,
+    selected_tower_opt: Res<SelectedTower>,
     mut player: ResMut<Player>,
 ) {
+    let Some(selected_tower) = selected_tower_opt.0 else { return; };
+    
     if !mouse_button_input.just_pressed(MouseButton::Left)
         || !interaction_query.is_empty()
-        || selected_tower.0.get_cost() > player.money
+        || selected_tower.get_cost() > player.money
     {
         return;
     }
@@ -126,11 +128,11 @@ fn mouse_click_system(
 
         if let Some(tile_id) = tile_id_opt {
             if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-                if tile_data.empty && player.money >= selected_tower.0.get_cost() {
+                if tile_data.empty && player.money >= selected_tower.get_cost() {
                     sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
                     tile_data.empty = false;
-                    player.money -= selected_tower.0.get_cost();
-                    spawn_tower(&mut commands, tile_position, selected_tower.0);
+                    player.money -= selected_tower.get_cost();
+                    spawn_tower(&mut commands, tile_position, selected_tower);
                 }
             }
         }

@@ -128,14 +128,14 @@ impl TowerType {
 }
 
 #[derive(Resource)]
-pub struct SelectedTower(pub TowerType);
+pub struct SelectedTower(pub Option<TowerType>);
 
 pub struct TowerPlugin;
 
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, tower_shooting)
-            .insert_resource(SelectedTower(TowerType::Basic));
+            .insert_resource(SelectedTower(None));
     }
 }
 
