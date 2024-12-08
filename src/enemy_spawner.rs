@@ -90,10 +90,10 @@ fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
     time: Res<Time>,
-    mut player: ResMut<Player>
+    mut player: ResMut<Player>,
 ) {
     for (mut spawner, transform) in &mut spawners {
-        let mut wave_ix = spawner.wave_ix;
+        let wave_ix = spawner.wave_ix;
         let wave = &mut spawner.waves[wave_ix];
         for segment in &mut wave.segments {
             segment.segment_timer.tick(time.delta());
@@ -101,7 +101,7 @@ fn enemy_spawn_system(
                 if segment.count == 0 {
                     segment.segment_timer.pause();
                     wave.segments_left -= 1;
-                    
+
                     if wave.segments_left <= 0 {
                         player.money += wave.reward;
                         spawner.wave_ix += 1;
