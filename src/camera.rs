@@ -10,6 +10,11 @@ const CAMERA_MAX_SCALE: f32 = 3.0;
 const CAMERA_MIN_SCALE: f32 = 0.2;
 const CAMERA_DEFAULT_SCALE: f32 = 1.5;
 
+const CAMERA_MAX_X: f32 = TILE_SIZE * 10.0;
+const CAMERA_MIN_X: f32 = - TILE_SIZE * 10.0;
+const CAMERA_MAX_Y: f32 = TILE_SIZE * 10.0;
+const CAMERA_MIN_Y: f32 = - TILE_SIZE * 10.0;
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
@@ -67,16 +72,15 @@ fn camera_control(
 
     if keys.any_pressed([KeyCode::KeyZ]) {
         camera_projection.scale += CAMERA_SCALE_SPEED * time.delta_secs();
-        if camera_projection.scale > CAMERA_MAX_SCALE {
-            camera_projection.scale = CAMERA_MAX_SCALE;
-        }
     }
     if keys.any_pressed([KeyCode::KeyX]) {
         camera_projection.scale -= CAMERA_SCALE_SPEED * time.delta_secs();
-        if camera_projection.scale < CAMERA_MIN_SCALE {
-            camera_projection.scale = CAMERA_MIN_SCALE;
-        }
     }
+
+    camera_projection.scale = camera_projection.scale.clamp(CAMERA_MIN_SCALE, CAMERA_MAX_SCALE);
+    camera_transform.translation.x = camera_transform.translation.x.clamp(CAMERA_MIN_X, CAMERA_MAX_X);
+    camera_transform.translation.y = camera_transform.translation.y.clamp(CAMERA_MIN_Y, CAMERA_MAX_Y);
+
 }
 
 fn mouse_click_system(
