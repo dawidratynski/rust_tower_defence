@@ -93,47 +93,44 @@ fn enemy_spawn_system(
     mut player: ResMut<Player>,
     enemies: Query<(), With<Enemy>>,
 ) {
-    for (mut spawner, transform) in &mut spawners {
-        let wave_ix = spawner.wave_ix;
+    let (mut spawner, transform) = spawners.single_mut();
+    let wave_ix = spawner.wave_ix;
 
-        if wave_ix == spawner.waves.len() {
-            if enemies.is_empty() {
-                eprintln!("You won!");
-                unimplemented!();
-            }
-            else {
-                return;
-            }
+    if wave_ix == spawner.waves.len() {
+        eprintln!("You won!");
+        unimplemented!();
+    }
+
+    let wave = &mut spawner.waves[wave_ix];
+
+    if wave.segments_left == 0 {
+        if enemies.is_empty() {
+            player.money += wave.reward;
+            spawner.wave_ix += 1;
         }
-        
-        let wave = &mut spawner.waves[wave_ix];
-        for segment in &mut wave.segments {
-            segment.segment_timer.tick(time.delta());
-            if segment.segment_timer.just_finished() {
+        return;
+    }
+
+    for segment in &mut wave.segments {
+        segment.segment_timer.tick(time.delta());
+        if segment.segment_timer.just_finished() {
+            if segment.count == 0 {
+                segment.segment_timer.pause();
+                wave.segments_left -= 1;
+            } else {
+                segment.count -= 1;
+
                 if segment.count == 0 {
-                    segment.segment_timer.pause();
-                    wave.segments_left -= 1;
-
-                    if wave.segments_left == 0 {
-                        player.money += wave.reward;
-                        spawner.wave_ix += 1;
-                        break;
-                    }
+                    segment
+                        .segment_timer
+                        .set_duration(Duration::from_secs_f32(segment.wait_after));
                 } else {
-                    segment.count -= 1;
-
-                    if segment.count == 0 {
-                        segment
-                            .segment_timer
-                            .set_duration(Duration::from_secs_f32(segment.wait_after));
-                    } else {
-                        segment
-                            .segment_timer
-                            .set_duration(Duration::from_secs_f32(segment.wait_between));
-                    }
-
-                    spawn_enemy(&mut commands, transform, segment.template, 1.0);
+                    segment
+                        .segment_timer
+                        .set_duration(Duration::from_secs_f32(segment.wait_between));
                 }
+
+                spawn_enemy(&mut commands, transform, segment.template, 1.0);
             }
         }
     }
