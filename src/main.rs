@@ -10,6 +10,7 @@ mod constants;
 mod despawn;
 mod enemy;
 mod enemy_spawner;
+mod game_time;
 mod map;
 mod player;
 mod tower;
@@ -23,6 +24,7 @@ pub use constants::*;
 pub use despawn::*;
 pub use enemy::*;
 pub use enemy_spawner::*;
+pub use game_time::*;
 pub use map::*;
 pub use player::*;
 pub use tower::*;
@@ -55,5 +57,6 @@ fn main() {
         .add_plugins(BasePlugin)
         .add_plugins(DespawnPlugin)
         .add_plugins(PlayerPlugin)
+        .add_plugins(GameTimePlugin)
         .run();
 }

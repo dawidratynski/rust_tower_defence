@@ -88,9 +88,10 @@ fn enemy_movement(
     mut enemies: Query<(&mut Enemy, &mut Transform)>,
     path: Res<EnemyPath>,
     time: Res<Time>,
+    game_time: Res<GameTime>,
 ) {
     for (mut enemy, mut transform) in &mut enemies {
-        let movement_distance = enemy.speed * time.delta_secs();
+        let movement_distance = enemy.speed * game_time.delta_secs(&time);
         let delta_to_goal = vec2_from_tile_tuple(path.nodes[enemy.path_stage as usize])
             - transform.translation.xy();
 

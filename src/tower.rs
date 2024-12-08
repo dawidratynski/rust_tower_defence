@@ -24,7 +24,7 @@ impl TowerType {
             TowerType::Basic => (
                 Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)),
                 Tower {
-                    shooting_timer: Timer::from_seconds(0.5, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(1.5, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
@@ -34,7 +34,7 @@ impl TowerType {
             TowerType::Sniper => (
                 Sprite::from_color(css::DARK_GREEN, Vec2::splat(TILE_SIZE)),
                 Tower {
-                    shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(5.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
@@ -44,7 +44,7 @@ impl TowerType {
             TowerType::Minigun => (
                 Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE)),
                 Tower {
-                    shooting_timer: Timer::from_seconds(0.01, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(0.2, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.2,
@@ -54,7 +54,7 @@ impl TowerType {
             TowerType::Piercer => (
                 Sprite::from_color(css::DARK_CYAN, Vec2::splat(TILE_SIZE)),
                 Tower {
-                    shooting_timer: Timer::from_seconds(1.2, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: *self,
                     spread: 0.0,
@@ -154,9 +154,10 @@ fn tower_shooting(
     mut towers: Query<(&mut Tower, &Transform)>,
     enemies: Query<&GlobalTransform, With<Enemy>>,
     time: Res<Time>,
+    game_time: Res<GameTime>,
 ) {
     for (mut tower, transform) in &mut towers {
-        tower.shooting_timer.tick(time.delta());
+        tower.shooting_timer.tick(game_time.delta(&time));
         if tower.shooting_timer.just_finished() {
             let bullet_spawn_point = transform.translation + tower.bullet_spawn_offset;
 

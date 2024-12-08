@@ -39,6 +39,7 @@ fn camera_control(
     keys: Res<ButtonInput<KeyCode>>,
     mut camera_query: Query<(&mut Transform, &mut OrthographicProjection), With<Camera2d>>,
     time: Res<Time>,
+    mut game_time: ResMut<GameTime>,
 ) {
     let (mut camera_transform, mut camera_projection) = camera_query.single_mut();
 
@@ -72,6 +73,12 @@ fn camera_control(
         camera_projection.scale -= CAMERA_SCALE_SPEED * time.delta_secs();
     }
 
+    if keys.any_pressed([KeyCode::KeyC]) {
+        game_time.scale = 3.0;
+    } else {
+        game_time.scale = 1.0;
+    }
+
     camera_projection.scale = camera_projection
         .scale
         .clamp(CAMERA_MIN_SCALE, CAMERA_MAX_SCALE);
@@ -96,8 +103,10 @@ fn mouse_click_system(
     selected_tower_opt: Res<SelectedTower>,
     mut player: ResMut<Player>,
 ) {
-    let Some(selected_tower) = selected_tower_opt.0 else { return; };
-    
+    let Some(selected_tower) = selected_tower_opt.0 else {
+        return;
+    };
+
     if !mouse_button_input.just_pressed(MouseButton::Left)
         || !interaction_query.is_empty()
         || selected_tower.get_cost() > player.money
