@@ -109,8 +109,8 @@ fn spawn_basic_scene(
 
     let enemy_path_tiles = enemy_path.tiles_on_path();
 
-    for x_tile in -100..100 {
-        for y_tile in -100..100 {
+    for x_tile in -15..15 {
+        for y_tile in -15..15 {
             let tile_bundle = if enemy_path_tiles.contains(&(x_tile, y_tile)) {
                 TileBundle {
                     sprite: Sprite::from_color(css::STEEL_BLUE, Vec2::splat(TILE_SIZE * 1.0)),

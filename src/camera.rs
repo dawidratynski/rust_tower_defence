@@ -11,9 +11,9 @@ const CAMERA_MIN_SCALE: f32 = 0.2;
 const CAMERA_DEFAULT_SCALE: f32 = 1.5;
 
 const CAMERA_MAX_X: f32 = TILE_SIZE * 10.0;
-const CAMERA_MIN_X: f32 = - TILE_SIZE * 10.0;
+const CAMERA_MIN_X: f32 = -TILE_SIZE * 10.0;
 const CAMERA_MAX_Y: f32 = TILE_SIZE * 10.0;
-const CAMERA_MIN_Y: f32 = - TILE_SIZE * 10.0;
+const CAMERA_MIN_Y: f32 = -TILE_SIZE * 10.0;
 
 pub struct CameraPlugin;
 
@@ -32,11 +32,6 @@ fn spawn_camera(mut commands: Commands) {
             scale: CAMERA_DEFAULT_SCALE,
             ..OrthographicProjection::default_2d()
         },
-        Transform::from_xyz(
-            WINDOW_WIDTH / 2.0 + TILE_SIZE / 2.0,
-            WINDOW_HEIGHT / 2.0 + TILE_SIZE / 2.0,
-            0.0,
-        ),
     ));
 }
 
@@ -77,10 +72,17 @@ fn camera_control(
         camera_projection.scale -= CAMERA_SCALE_SPEED * time.delta_secs();
     }
 
-    camera_projection.scale = camera_projection.scale.clamp(CAMERA_MIN_SCALE, CAMERA_MAX_SCALE);
-    camera_transform.translation.x = camera_transform.translation.x.clamp(CAMERA_MIN_X, CAMERA_MAX_X);
-    camera_transform.translation.y = camera_transform.translation.y.clamp(CAMERA_MIN_Y, CAMERA_MAX_Y);
-
+    camera_projection.scale = camera_projection
+        .scale
+        .clamp(CAMERA_MIN_SCALE, CAMERA_MAX_SCALE);
+    camera_transform.translation.x = camera_transform
+        .translation
+        .x
+        .clamp(CAMERA_MIN_X, CAMERA_MAX_X);
+    camera_transform.translation.y = camera_transform
+        .translation
+        .y
+        .clamp(CAMERA_MIN_Y, CAMERA_MAX_Y);
 }
 
 fn mouse_click_system(
@@ -120,14 +122,16 @@ fn mouse_click_system(
             + (camera_transform.rotation * Vec3::from((camera_to_cursor_offset, 0.0))).xy();
 
         let tile_position = get_tile(game_cursor_position.x, game_cursor_position.y);
-        let tile_id = tile_map.tile_map.get(&tile_position).unwrap();
+        let tile_id_opt = tile_map.tile_map.get(&tile_position);
 
-        if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-            if tile_data.empty && player.money >= selected_tower.0.get_cost() {
-                sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
-                tile_data.empty = false;
-                player.money -= selected_tower.0.get_cost();
-                spawn_tower(&mut commands, tile_position, selected_tower.0);
+        if let Some(tile_id) = tile_id_opt {
+            if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
+                if tile_data.empty && player.money >= selected_tower.0.get_cost() {
+                    sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
+                    tile_data.empty = false;
+                    player.money -= selected_tower.0.get_cost();
+                    spawn_tower(&mut commands, tile_position, selected_tower.0);
+                }
             }
         }
     }
