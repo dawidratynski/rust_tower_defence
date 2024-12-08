@@ -102,7 +102,7 @@ fn enemy_spawn_system(
                     segment.segment_timer.pause();
                     wave.segments_left -= 1;
 
-                    if wave.segments_left <= 0 {
+                    if wave.segments_left == 0 {
                         player.money += wave.reward;
                         spawner.wave_ix += 1;
                         break;

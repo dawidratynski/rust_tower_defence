@@ -8,6 +8,7 @@ const CAMERA_SCALE_SPEED: f32 = 1.0;
 
 const CAMERA_MAX_SCALE: f32 = 3.0;
 const CAMERA_MIN_SCALE: f32 = 0.2;
+const CAMERA_DEFAULT_SCALE: f32 = 1.5;
 
 pub struct CameraPlugin;
 
@@ -20,10 +21,17 @@ impl Plugin for CameraPlugin {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera2d).insert(Transform::from_xyz(
-        WINDOW_WIDTH / 2.0 + TILE_SIZE / 2.0,
-        WINDOW_HEIGHT / 2.0 + TILE_SIZE / 2.0,
-        0.0,
+    commands.spawn((
+        Camera2d,
+        OrthographicProjection {
+            scale: CAMERA_DEFAULT_SCALE,
+            ..OrthographicProjection::default_2d()
+        },
+        Transform::from_xyz(
+            WINDOW_WIDTH / 2.0 + TILE_SIZE / 2.0,
+            WINDOW_HEIGHT / 2.0 + TILE_SIZE / 2.0,
+            0.0,
+        ),
     ));
 }
 

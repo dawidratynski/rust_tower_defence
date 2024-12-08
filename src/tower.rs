@@ -70,7 +70,7 @@ impl TowerType {
                 Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
-                    direction: direction,
+                    direction,
                     speed: 1500.0,
                     hitbox_radius: 20.0,
                     damage: 5.0,
@@ -82,7 +82,7 @@ impl TowerType {
                 Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
-                    direction: direction,
+                    direction,
                     speed: 3000.0,
                     hitbox_radius: 50.0,
                     damage: 50.0,
@@ -94,7 +94,7 @@ impl TowerType {
                 Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
-                    direction: direction,
+                    direction,
                     speed: 1000.0,
                     hitbox_radius: 20.0,
                     damage: 1.0,
@@ -106,7 +106,7 @@ impl TowerType {
                 Sprite::from_color(css::BLUE_VIOLET, Vec2::splat(TILE_SIZE * 0.25)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(10.0, TimerMode::Once),
-                    direction: direction,
+                    direction,
                     speed: 500.0,
                     hitbox_radius: 50.0,
                     damage: 5.0,
