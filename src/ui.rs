@@ -29,6 +29,9 @@ struct HealthDisplay;
 #[derive(Component)]
 struct MoneyDisplay;
 
+#[derive(Component)]
+struct RoundDisplay;
+
 fn spawn_ui(mut commands: Commands) {
     commands
         .spawn((
@@ -61,8 +64,29 @@ fn spawn_ui(mut commands: Commands) {
                                 align_items: AlignItems::Center,
                                 ..default()
                             },
-                            BorderColor(Color::BLACK.with_alpha(0.5)),
-                            BackgroundColor(NORMAL_BUTTON.with_alpha(0.5)),
+                            BorderColor(Color::BLACK.with_alpha(0.7)),
+                            BackgroundColor(NORMAL_BUTTON.with_alpha(0.7)),
+                        ))
+                        .with_child((
+                            RoundDisplay,
+                            Text::new(""),
+                            TextFont {
+                                font_size: 20.0,
+                                ..default()
+                            },
+                            TextColor(Color::srgb(0.9, 0.9, 0.9)),
+                        ));
+                    left_column
+                        .spawn((
+                            Node {
+                                width: Val::Px(150.0),
+                                height: Val::Px(65.0),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            BorderColor(Color::BLACK.with_alpha(0.7)),
+                            BackgroundColor(NORMAL_BUTTON.with_alpha(0.7)),
                         ))
                         .with_child((
                             MoneyDisplay,
@@ -83,8 +107,8 @@ fn spawn_ui(mut commands: Commands) {
                                 align_items: AlignItems::Center,
                                 ..default()
                             },
-                            BorderColor(Color::BLACK.with_alpha(0.5)),
-                            BackgroundColor(NORMAL_BUTTON.with_alpha(0.5)),
+                            BorderColor(Color::BLACK.with_alpha(0.7)),
+                            BackgroundColor(NORMAL_BUTTON.with_alpha(0.7)),
                         ))
                         .with_child((
                             HealthDisplay,
@@ -149,11 +173,24 @@ fn spawn_ui(mut commands: Commands) {
 
 fn update_player_stats_ui(
     player: Res<Player>,
-    mut health_text: Query<&mut Text, (With<HealthDisplay>, Without<MoneyDisplay>)>,
+    spawner: Query<&EnemySpawner>,
+    mut health_text: Query<&mut Text, With<HealthDisplay>>,
     mut money_text: Query<&mut Text, (With<MoneyDisplay>, Without<HealthDisplay>)>,
+    mut round_text: Query<
+        &mut Text,
+        (
+            With<RoundDisplay>,
+            Without<MoneyDisplay>,
+            Without<HealthDisplay>,
+        ),
+    >,
 ) {
+    let spawner = spawner.single();
+
     *(health_text.single_mut()) = format!("HP {}", player.health).into();
     *(money_text.single_mut()) = format!("$  {}", player.money).into();
+    *(round_text.single_mut()) =
+        format!("Round {} / {}", spawner.wave_ix + 1, spawner.waves.len()).into();
 }
 
 #[derive(Component)]
