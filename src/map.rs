@@ -71,21 +71,60 @@ fn spawn_basic_scene(
             Vec2::splat(TILE_SIZE),
         ))
         .insert(Transform::from_translation(vec3_from_tile(1, 5, 0.0)))
-        .insert(EnemySpawner {
-            spawn_timer: Timer::from_seconds(1.5, TimerMode::Repeating),
-            power_scale: 1.0,
-        });
-
-    commands
-        .spawn(Sprite::from_color(
-            css::DARK_GOLDENROD,
-            Vec2::splat(TILE_SIZE),
-        ))
-        .insert(Transform::from_translation(vec3_from_tile(-1, -2, 0.0)))
-        .insert(EnemySpawner {
-            spawn_timer: Timer::from_seconds(1.0, TimerMode::Repeating),
-            power_scale: 1.0,
-        });
+        .insert(EnemySpawner::new(
+            vec![
+                EnemyWave::new(
+                    vec![
+                        EnemyWaveSegment::new(
+                            EnemyTemplate::Basic,
+                            10,
+                            0.5,
+                            1.0,
+                            3.0,
+                        )
+                    ],
+                    50,
+                ),
+                EnemyWave::new(
+                    vec![
+                        EnemyWaveSegment::new(
+                            EnemyTemplate::Basic,
+                            10,
+                            0.5,
+                            2.0,
+                            1.0,
+                        ),
+                        EnemyWaveSegment::new(
+                            EnemyTemplate::Strong,
+                            3,
+                            3.0,
+                            4.0,
+                            1.0,
+                        )
+                    ],
+                    50,
+                ),
+                EnemyWave::new(
+                    vec![
+                        EnemyWaveSegment::new(
+                            EnemyTemplate::Fast,
+                            50,
+                            0.5,
+                            0.5,
+                            10.0,
+                        ),
+                        EnemyWaveSegment::new(
+                            EnemyTemplate::Boss,
+                            3,
+                            5.0,
+                            5.0,
+                            10.0,
+                        )
+                    ],
+                    50,
+                )
+            ]
+        ));
 
     commands
         .spawn(Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)))

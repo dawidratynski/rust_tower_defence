@@ -9,6 +9,7 @@ pub struct Enemy {
     pub path_stage: u32,
 }
 
+#[derive(Clone, Copy)]
 pub enum EnemyTemplate {
     Basic,
     Strong,
