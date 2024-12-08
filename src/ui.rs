@@ -2,7 +2,9 @@ use crate::*;
 
 const NORMAL_BUTTON: Color = Color::srgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::srgb(0.25, 0.25, 0.25);
-const PRESSED_BUTTON: Color = Color::srgb(0.35, 0.75, 0.35);
+const PRESSED_BUTTON: Color = Color::srgb(0.05, 0.05, 0.05);
+
+const SELECTED_TOWER_BORDER: Color = Color::srgb(0.05, 0.25, 0.05);
 
 const BUTTON_TOWER_TYPES: [tower::TowerType; 4] = [
     TowerType::Basic,
@@ -154,32 +156,49 @@ fn update_player_stats_ui(
     *(money_text.single_mut()) = format!("$  {}", player.money).into();
 }
 
+#[derive(Component)]
+struct PressedButton;
+
 fn tower_button_system(
     mut interaction_query: Query<
         (
+            Entity,
             &Interaction,
             &mut BackgroundColor,
             &mut BorderColor,
             &TowerType,
         ),
-        (Changed<Interaction>, With<Button>),
+        (Changed<Interaction>, With<Button>, Without<PressedButton>),
     >,
-    mut selected_tower: ResMut<SelectedTower>,
+    mut pressed_button_query: Query<
+        (Entity, &mut BackgroundColor, &mut BorderColor),
+        With<PressedButton>,
+    >,
+    mut selected_tower_opt: ResMut<SelectedTower>,
+    mut commands: Commands,
 ) {
-    for (interaction, mut color, mut border_color, tower_type) in &mut interaction_query {
-        match *interaction {
-            Interaction::Pressed => {
-                *color = PRESSED_BUTTON.into();
-                border_color.0 = css::RED.into();
-                selected_tower.0 = Some(*tower_type);
-            }
-            Interaction::Hovered => {
-                *color = HOVERED_BUTTON.into();
-                border_color.0 = Color::WHITE;
-            }
-            Interaction::None => {
-                *color = NORMAL_BUTTON.into();
-                border_color.0 = Color::BLACK;
+    for (entity, interaction, mut color, mut border_color, tower_type) in &mut interaction_query {
+        if selected_tower_opt.0.is_none_or(|x| x != *tower_type) {
+            match *interaction {
+                Interaction::Pressed => {
+                    selected_tower_opt.0 = Some(*tower_type);
+                    *color = PRESSED_BUTTON.into();
+                    border_color.0 = SELECTED_TOWER_BORDER;
+                    for (button_entity, mut button_background, mut button_border) in &mut pressed_button_query {
+                        *button_background = NORMAL_BUTTON.into();
+                        button_border.0 = Color::BLACK;
+                        commands.entity(button_entity).remove::<PressedButton>();
+                    }
+                    commands.entity(entity).insert(PressedButton);
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                    border_color.0 = Color::WHITE;
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                    border_color.0 = Color::BLACK;
+                }
             }
         }
     }

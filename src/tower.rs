@@ -10,7 +10,7 @@ pub struct Tower {
     pub range: f32,
 }
 
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Clone, Copy, PartialEq)]
 pub enum TowerType {
     Basic,
     Sniper,
