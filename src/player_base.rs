@@ -1,11 +1,11 @@
 use crate::*;
 
 #[derive(Component)]
-pub struct Base;
+pub struct PlayerBase;
 
-pub struct BasePlugin;
+pub struct PlayerBasePlugin;
 
-impl Plugin for BasePlugin {
+impl Plugin for PlayerBasePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, base_collision);
     }
@@ -13,9 +13,9 @@ impl Plugin for BasePlugin {
 
 fn base_collision(
     mut commands: Commands,
-    bases: Query<&Transform, With<Base>>,
+    bases: Query<&Transform, With<PlayerBase>>,
     mut enemies: Query<(Entity, &Transform, &mut Enemy)>,
-    mut player: ResMut<Player>,
+    mut player: ResMut<GameState>,
 ) {
     for base in &bases {
         for (enemy_entity, enemy_transfrom, mut enemy_data) in &mut enemies {

@@ -105,7 +105,7 @@ fn enemy_movement(
 fn enemy_death(
     mut commands: Commands,
     mut enemies: Query<(Entity, &mut Enemy)>,
-    mut player: ResMut<Player>,
+    mut player: ResMut<GameState>,
 ) {
     for (entity, mut enemy) in &mut enemies {
         if enemy.health <= 0.0 {

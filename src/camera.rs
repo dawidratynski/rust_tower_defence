@@ -101,7 +101,7 @@ fn mouse_click_system(
     tile_map: Res<TileMap>,
     mut commands: Commands,
     selected_tower_opt: Res<SelectedTower>,
-    mut player: ResMut<Player>,
+    mut player: ResMut<GameState>,
 ) {
     let Some(selected_tower) = selected_tower_opt.0 else {
         return;

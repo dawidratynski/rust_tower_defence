@@ -1,6 +1,18 @@
+use bevy::prelude::*;
+
 use std::time::Duration;
 
-use bevy::prelude::*;
+pub struct GameTimePlugin;
+
+impl Plugin for GameTimePlugin {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(GameTime {
+            scale: 1.0,
+            delta_secs: 0.0,
+        })
+        .add_systems(PreUpdate, update_game_time);
+    }
+}
 
 #[derive(Resource)]
 pub struct GameTime {
@@ -20,16 +32,4 @@ impl GameTime {
 
 fn update_game_time(time: Res<Time>, mut game_time: ResMut<GameTime>) {
     game_time.delta_secs = time.delta_secs();
-}
-
-pub struct GameTimePlugin;
-
-impl Plugin for GameTimePlugin {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(GameTime {
-            scale: 1.0,
-            delta_secs: 0.0,
-        })
-        .add_systems(PreUpdate, update_game_time);
-    }
 }

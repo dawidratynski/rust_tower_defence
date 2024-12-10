@@ -1,5 +1,3 @@
-// General game settings
-
 pub const GAME_WINDOW_TITLE: &str = "Game prototye v1";
 
 pub const SPRITE_RESOLUTION: u16 = 16;

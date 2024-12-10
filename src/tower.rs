@@ -142,10 +142,11 @@ impl Plugin for TowerPlugin {
 pub fn spawn_tower(commands: &mut Commands, position: (i32, i32), tower_type: TowerType) -> Entity {
     let (sprite, tower) = tower_type.get_tower();
     commands
-        .spawn((sprite, tower))
-        .insert(Transform::from_translation(vec3_from_tile(
-            position.0, position.1, 0.0,
-        )))
+        .spawn((
+            sprite,
+            tower,
+            Transform::from_translation(vec3_from_tile(position.0, position.1, 0.0)),
+        ))
         .id()
 }
 
@@ -178,11 +179,10 @@ fn tower_shooting(
                     rand::thread_rng().gen_range(-tower.spread..=tower.spread),
                 );
 
-                commands
-                    .spawn(tower.tower_type.get_bullet(spread_direction * direction))
-                    .insert(Transform::from_translation(
-                        transform.translation + tower.bullet_spawn_offset,
-                    ));
+                commands.spawn((
+                    tower.tower_type.get_bullet(spread_direction * direction),
+                    Transform::from_translation(transform.translation + tower.bullet_spawn_offset),
+                ));
             }
         }
     }

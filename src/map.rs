@@ -66,16 +66,11 @@ fn spawn_basic_scene(
     mut tile_map: ResMut<TileMap>,
     enemy_path: Res<EnemyPath>,
 ) {
-    commands
-        .spawn(Sprite::from_color(
-            css::DARK_RED,
-            Vec2::splat(TILE_SIZE * 0.6),
-        ))
-        .insert(
-            Transform::from_translation(vec3_from_tile(1, 5, 0.0))
-                .with_rotation(Quat::from_rotation_z(PI / 4.0)),
-        )
-        .insert(EnemySpawner::new(vec![
+    commands.spawn((
+        Sprite::from_color(css::DARK_RED, Vec2::splat(TILE_SIZE * 0.6)),
+        Transform::from_translation(vec3_from_tile(1, 5, 0.0))
+            .with_rotation(Quat::from_rotation_z(PI / 4.0)),
+        EnemySpawner::new(vec![
             EnemyWave::new(
                 vec![EnemyWaveSegment::new(
                     EnemyTemplate::Basic,
@@ -100,12 +95,14 @@ fn spawn_basic_scene(
                 ],
                 50,
             ),
-        ]));
+        ]),
+    ));
 
-    commands
-        .spawn(Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)))
-        .insert(Transform::from_translation(vec3_from_tile(12, 5, 0.0)))
-        .insert(Base);
+    commands.spawn((
+        Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)),
+        Transform::from_translation(vec3_from_tile(12, 5, 0.0)),
+        PlayerBase,
+    ));
 
     let enemy_path_tiles = enemy_path.tiles_on_path();
 

@@ -2,6 +2,8 @@ use std::time::Duration;
 
 use crate::*;
 
+// This will be changed to a resource, and spawnpoints will be separated out
+
 #[derive(Component)]
 pub struct EnemySpawner {
     pub power_scale: f32,
@@ -77,20 +79,17 @@ fn spawn_enemy(
     template: EnemyTemplate,
     power_scale: f32,
 ) {
-    commands
-        .spawn(Enemy::from_template(template, power_scale))
-        .insert(Transform::from_xyz(
-            transform.translation.x,
-            transform.translation.y,
-            5.0,
-        ));
+    commands.spawn((
+        Enemy::from_template(template, power_scale),
+        Transform::from_xyz(transform.translation.x, transform.translation.y, 5.0),
+    ));
 }
 
 fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
     game_time: Res<GameTime>,
-    mut player: ResMut<Player>,
+    mut player: ResMut<GameState>,
     enemies: Query<(), With<Enemy>>,
 ) {
     let (mut spawner, transform) = spawners.single_mut();

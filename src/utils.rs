@@ -1,17 +1,12 @@
-use crate::*;
+use bevy::prelude::*;
+
+use crate::game_config::TILE_SIZE;
 
 pub fn vec3_from_tile(x: i32, y: i32, visibility: f32) -> Vec3 {
     Vec3 {
         x: TILE_SIZE * x as f32,
         y: TILE_SIZE * y as f32,
         z: visibility,
-    }
-}
-
-pub fn vec2_from_tile(x: i32, y: i32) -> Vec2 {
-    Vec2 {
-        x: TILE_SIZE * x as f32,
-        y: TILE_SIZE * y as f32,
     }
 }
 

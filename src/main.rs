@@ -3,30 +3,31 @@ pub use bevy::prelude::*;
 use bevy::color::palettes::css;
 use bevy::math::FloatOrd;
 
-mod base;
 mod bullet;
 mod camera;
-mod constants;
 mod despawn;
 mod enemy;
 mod enemy_spawner;
+mod game_config;
+mod game_state;
 mod game_time;
 mod map;
-mod player;
+mod player_base;
 mod tower;
 mod ui;
+mod ui_config;
 mod utils;
 
-pub use base::*;
 pub use bullet::*;
 pub use camera::*;
-pub use constants::*;
 pub use despawn::*;
 pub use enemy::*;
 pub use enemy_spawner::*;
+pub use game_config::*;
+pub use game_state::*;
 pub use game_time::*;
 pub use map::*;
-pub use player::*;
+pub use player_base::*;
 pub use tower::*;
 pub use ui::*;
 pub use utils::*;
@@ -54,9 +55,9 @@ fn main() {
         .add_plugins(BulletPlugin)
         .add_plugins(EnemyPlugin)
         .add_plugins(EnemySpawnerPlugin)
-        .add_plugins(BasePlugin)
+        .add_plugins(PlayerBasePlugin)
         .add_plugins(DespawnPlugin)
-        .add_plugins(PlayerPlugin)
+        .add_plugins(GameStatePlugin)
         .add_plugins(GameTimePlugin)
         .run();
 }
