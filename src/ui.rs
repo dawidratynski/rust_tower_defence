@@ -6,7 +6,7 @@ use crate::tower::SelectedTower;
 use crate::tower_types::TowerType;
 use crate::ui_config::*;
 
-// This module will likely need a rework or at least refactoring
+// TODO: Refactor spawn_ui
 
 pub struct UIPlugin;
 
@@ -14,7 +14,7 @@ impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, spawn_ui)
             .add_systems(Update, update_tower_selection_buttons)
-            .add_systems(Update, update_player_stats_ui);
+            .add_systems(Update, update_game_state_ui);
     }
 }
 
@@ -30,8 +30,8 @@ struct RoundDisplay;
 #[derive(Component)]
 struct SelectedTowerButton;
 
-fn update_player_stats_ui(
-    player: Res<GameState>,
+fn update_game_state_ui(
+    game_state: Res<GameState>,
     spawner: Query<&EnemySpawner>,
     mut health_text: Query<&mut Text, (With<HealthDisplay>, Without<RoundDisplay>)>,
     mut money_text: Query<&mut Text, (With<MoneyDisplay>, Without<HealthDisplay>)>,
@@ -39,8 +39,8 @@ fn update_player_stats_ui(
 ) {
     let spawner = spawner.single();
 
-    *(health_text.single_mut()) = format!("HP {}", player.health).into();
-    *(money_text.single_mut()) = format!("$  {}", player.money).into();
+    *(health_text.single_mut()) = format!("HP {}", game_state.health).into();
+    *(money_text.single_mut()) = format!("$  {}", game_state.money).into();
     *(round_text.single_mut()) =
         format!("Round {} / {}", spawner.wave_ix + 1, spawner.waves.len()).into();
 }
@@ -110,7 +110,7 @@ fn update_tower_selection_buttons(
     }
 }
 
-fn spawn_player_stats_ui(ui_parent: &mut ChildBuilder) {
+fn spawn_game_state_ui(ui_parent: &mut ChildBuilder) {
     ui_parent
         .spawn((
             Node {
@@ -240,7 +240,7 @@ fn spawn_ui(mut commands: Commands) {
                     PickingBehavior::IGNORE,
                 ))
                 .with_children(|left_column| {
-                    spawn_player_stats_ui(left_column);
+                    spawn_game_state_ui(left_column);
                 });
 
             // Right UI Column

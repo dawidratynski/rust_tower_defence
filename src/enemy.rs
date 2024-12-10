@@ -114,11 +114,11 @@ fn enemy_movement(
 fn enemy_death(
     mut commands: Commands,
     mut enemies: Query<(Entity, &mut Enemy)>,
-    mut player: ResMut<GameState>,
+    mut game_state: ResMut<GameState>,
 ) {
     for (entity, mut enemy) in &mut enemies {
         if enemy.health <= 0.0 {
-            player.money += enemy.money_for_kill;
+            game_state.money += enemy.money_for_kill;
             enemy.money_for_kill = 0;
             commands.entity(entity).insert(Despawn);
         }

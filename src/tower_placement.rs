@@ -28,7 +28,7 @@ fn tower_placement_system(
     mouse_button_input: Res<ButtonInput<MouseButton>>,
     tile_map: Res<TileMap>,
     selected_tower_opt: Res<SelectedTower>,
-    mut player: ResMut<GameState>,
+    mut game_state: ResMut<GameState>,
     mut commands: Commands,
 ) {
     let Some(selected_tower) = selected_tower_opt.0 else {
@@ -38,7 +38,7 @@ fn tower_placement_system(
     if !mouse_button_input.just_pressed(MouseButton::Left)
         // This prevents placing towers under buttons
         || !interaction_query.is_empty()
-        || selected_tower.get_cost() > player.money
+        || selected_tower.get_cost() > game_state.money
     {
         return;
     }
@@ -66,10 +66,10 @@ fn tower_placement_system(
 
         if let Some(tile_id) = tile_id_opt {
             if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-                if tile_data.empty && player.money >= selected_tower.get_cost() {
+                if tile_data.empty && game_state.money >= selected_tower.get_cost() {
                     sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
                     tile_data.empty = false;
-                    player.money -= selected_tower.get_cost();
+                    game_state.money -= selected_tower.get_cost();
                     spawn_tower(&mut commands, tile_position, selected_tower);
                 }
             }

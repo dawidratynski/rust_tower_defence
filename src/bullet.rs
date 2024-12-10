@@ -32,17 +32,17 @@ fn bullet_hit(
 ) {
     for (bullet_entity, bullet_transform, mut bullet_data) in &mut bullets {
         for (enemy_entity, mut enemy, enemy_transform) in &mut enemies {
-            if Vec3::distance(
-                bullet_transform.translation(),
-                enemy_transform.translation(),
+            if Vec2::distance(
+                bullet_transform.translation().xy(),
+                enemy_transform.translation().xy(),
             ) < bullet_data.hitbox_radius
                 && !bullet_data.already_hit.contains(&enemy_entity)
+                && bullet_data.pierce > 0
             {
-                enemy.health -= bullet_data.damage;
-                bullet_data.already_hit.push(enemy_entity);
                 bullet_data.pierce -= 1;
+                bullet_data.already_hit.push(enemy_entity);
+                enemy.health -= bullet_data.damage;
                 if bullet_data.pierce <= 0 {
-                    bullet_data.damage = 0.0;
                     commands.entity(bullet_entity).insert(Despawn);
                 }
             }

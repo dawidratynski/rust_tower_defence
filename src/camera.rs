@@ -2,6 +2,9 @@ use bevy::prelude::*;
 
 use crate::game_config::*;
 
+// TODO: Separate magic constants to camera_config
+// TODO: Separate controls to a dedicated control_config
+
 const CAMERA_SPEED: f32 = 500.0;
 const CAMERA_ROTATION_SPEED: f32 = 1.5;
 const CAMERA_SCALE_SPEED: f32 = 1.0;

@@ -19,14 +19,14 @@ fn base_collision(
     mut commands: Commands,
     bases: Query<&Transform, With<PlayerBase>>,
     mut enemies: Query<(Entity, &Transform, &mut Enemy)>,
-    mut player: ResMut<GameState>,
+    mut game_state: ResMut<GameState>,
 ) {
     for base in &bases {
         for (enemy_entity, enemy_transfrom, mut enemy_data) in &mut enemies {
             enemy_data.health += 0.0001;
             if Vec2::distance(base.translation.xy(), enemy_transfrom.translation.xy()) < 10.0 {
-                player.health -= enemy_data.base_damage;
-                if player.health == 0 {
+                game_state.health -= enemy_data.base_damage;
+                if game_state.health == 0 {
                     eprint!("YOU LOST");
                     unimplemented!();
                 }

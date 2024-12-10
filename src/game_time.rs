@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 const TIME_SPEEDUP_KEY: KeyCode = KeyCode::KeyC;
+const TIME_SPEEDUP_SCALE: f32 = 2.0;
 
 pub struct GameTimePlugin;
 
@@ -39,7 +40,7 @@ fn update_game_time(time: Res<Time>, mut game_time: ResMut<GameTime>) {
 
 fn time_flow_controls(keys: Res<ButtonInput<KeyCode>>, mut game_time: ResMut<GameTime>) {
     if keys.pressed(TIME_SPEEDUP_KEY) {
-        game_time.scale = 3.0;
+        game_time.scale = TIME_SPEEDUP_SCALE;
     } else {
         game_time.scale = 1.0;
     }

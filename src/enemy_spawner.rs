@@ -6,6 +6,13 @@ use crate::enemy::{Enemy, EnemyTemplate};
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
 
+// This module needs a rewrite / refactor
+
+// TODO: Separate spawn location from wave logic (e.g. spawnpoints)
+// TODO: EnemySpawner should become a resource
+// TODO: Redesign wave system -> either end after all enemies are defeated 
+//       or use a constant rolling-round approach
+
 pub struct EnemySpawnerPlugin;
 
 impl Plugin for EnemySpawnerPlugin {
@@ -13,8 +20,6 @@ impl Plugin for EnemySpawnerPlugin {
         app.add_systems(Update, enemy_spawn_system);
     }
 }
-
-// This will be changed to a resource at some point, and spawnpoints will be separated out
 
 #[derive(Component)]
 pub struct EnemySpawner {
@@ -86,7 +91,7 @@ fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
     game_time: Res<GameTime>,
-    mut player: ResMut<GameState>,
+    mut game_state: ResMut<GameState>,
     enemies: Query<(), With<Enemy>>,
 ) {
     let (mut spawner, transform) = spawners.single_mut();
@@ -101,7 +106,7 @@ fn enemy_spawn_system(
 
     if wave.segments_left == 0 {
         if enemies.is_empty() {
-            player.money += wave.reward;
+            game_state.money += wave.reward;
             spawner.wave_ix += 1;
         }
         return;
