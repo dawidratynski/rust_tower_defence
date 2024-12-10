@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::game_config::*;
-use crate::game_time::GameTime;
 
 const CAMERA_SPEED: f32 = 500.0;
 const CAMERA_ROTATION_SPEED: f32 = 1.5;
@@ -39,7 +38,6 @@ fn camera_control(
     keys: Res<ButtonInput<KeyCode>>,
     mut camera_query: Query<(&mut Transform, &mut OrthographicProjection), With<Camera2d>>,
     time: Res<Time>,
-    mut game_time: ResMut<GameTime>,
 ) {
     let (mut camera_transform, mut camera_projection) = camera_query.single_mut();
 
@@ -71,12 +69,6 @@ fn camera_control(
     }
     if keys.any_pressed([KeyCode::KeyX]) {
         camera_projection.scale -= CAMERA_SCALE_SPEED * time.delta_secs();
-    }
-
-    if keys.any_pressed([KeyCode::KeyC]) {
-        game_time.scale = 3.0;
-    } else {
-        game_time.scale = 1.0;
     }
 
     camera_projection.scale = camera_projection
