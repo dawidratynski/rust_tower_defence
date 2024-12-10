@@ -1,8 +1,5 @@
 use bevy::prelude::*;
 
-#[derive(Component)]
-pub struct Despawn;
-
 pub struct DespawnPlugin;
 
 impl Plugin for DespawnPlugin {
@@ -10,6 +7,9 @@ impl Plugin for DespawnPlugin {
         app.add_systems(PostUpdate, despawn_marked);
     }
 }
+
+#[derive(Component)]
+pub struct Despawn;
 
 fn despawn_marked(mut commands: Commands, entities: Query<Entity, With<Despawn>>) {
     for entity in &entities {

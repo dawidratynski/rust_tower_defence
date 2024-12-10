@@ -4,9 +4,6 @@ use crate::despawn::Despawn;
 use crate::enemy::Enemy;
 use crate::game_state::GameState;
 
-#[derive(Component)]
-pub struct PlayerBase;
-
 pub struct PlayerBasePlugin;
 
 impl Plugin for PlayerBasePlugin {
@@ -14,6 +11,9 @@ impl Plugin for PlayerBasePlugin {
         app.add_systems(Update, base_collision);
     }
 }
+
+#[derive(Component)]
+pub struct PlayerBase;
 
 fn base_collision(
     mut commands: Commands,

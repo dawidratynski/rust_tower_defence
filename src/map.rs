@@ -10,6 +10,20 @@ use crate::game_config::TILE_SIZE;
 use crate::player_base::PlayerBase;
 use crate::utils::vec3_from_tile;
 
+pub struct MapPlugin;
+
+impl Plugin for MapPlugin {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(TileMap {
+            tile_map: HashMap::new(),
+        })
+        .insert_resource(EnemyPath {
+            nodes: vec![(1, 5), (1, 0), (5, 0), (5, 5), (12, 5)],
+        })
+        .add_systems(Startup, spawn_basic_scene);
+    }
+}
+
 #[derive(Bundle)]
 pub struct TileBundle {
     pub sprite: Sprite,
@@ -51,20 +65,6 @@ impl EnemyPath {
             }
         }
         tiles
-    }
-}
-
-pub struct MapPlugin;
-
-impl Plugin for MapPlugin {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(TileMap {
-            tile_map: HashMap::new(),
-        })
-        .insert_resource(EnemyPath {
-            nodes: vec![(1, 5), (1, 0), (5, 0), (5, 5), (12, 5)],
-        })
-        .add_systems(Startup, spawn_basic_scene);
     }
 }
 

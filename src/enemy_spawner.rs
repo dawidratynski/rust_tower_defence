@@ -6,7 +6,15 @@ use crate::enemy::{Enemy, EnemyTemplate};
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
 
-// This will be changed to a resource, and spawnpoints will be separated out
+pub struct EnemySpawnerPlugin;
+
+impl Plugin for EnemySpawnerPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, enemy_spawn_system);
+    }
+}
+
+// This will be changed to a resource at some point, and spawnpoints will be separated out
 
 #[derive(Component)]
 pub struct EnemySpawner {
@@ -59,14 +67,6 @@ impl EnemyWaveSegment {
             wait_after,
             segment_timer: Timer::new(Duration::from_secs_f32(wait_before), TimerMode::Repeating),
         }
-    }
-}
-
-pub struct EnemySpawnerPlugin;
-
-impl Plugin for EnemySpawnerPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, enemy_spawn_system);
     }
 }
 

@@ -8,6 +8,15 @@ use crate::game_time::GameTime;
 use crate::map::EnemyPath;
 use crate::utils::vec2_from_tile_tuple;
 
+pub struct EnemyPlugin;
+
+impl Plugin for EnemyPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, enemy_movement)
+            .add_systems(Update, enemy_death);
+    }
+}
+
 #[derive(Component)]
 pub struct Enemy {
     pub speed: f32,
@@ -17,7 +26,7 @@ pub struct Enemy {
     pub path_stage: u32,
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // Unused enemy templates are ok
 #[derive(Clone, Copy)]
 pub enum EnemyTemplate {
     Basic,
@@ -81,15 +90,6 @@ impl Enemy {
                 Sprite::from_color(css::DARK_VIOLET, Vec2::splat(TILE_SIZE * 0.9)),
             ),
         }
-    }
-}
-
-pub struct EnemyPlugin;
-
-impl Plugin for EnemyPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, enemy_movement)
-            .add_systems(Update, enemy_death);
     }
 }
 

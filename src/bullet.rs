@@ -4,6 +4,16 @@ use crate::despawn::Despawn;
 use crate::enemy::Enemy;
 use crate::game_time::GameTime;
 
+pub struct BulletPlugin;
+
+impl Plugin for BulletPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, bullet_despawn)
+            .add_systems(Update, bullet_movement)
+            .add_systems(Update, bullet_hit);
+    }
+}
+
 #[derive(Component)]
 pub struct Bullet {
     pub lifetime_timer: Timer,
@@ -13,16 +23,6 @@ pub struct Bullet {
     pub damage: f32,
     pub pierce: i32,
     pub already_hit: Vec<Entity>,
-}
-
-pub struct BulletPlugin;
-
-impl Plugin for BulletPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, bullet_despawn)
-            .add_systems(Update, bullet_movement)
-            .add_systems(Update, bullet_hit);
-    }
 }
 
 fn bullet_hit(
