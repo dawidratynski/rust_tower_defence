@@ -46,24 +46,19 @@ fn bullet_hit(
     }
 }
 
-fn bullet_movement(
-    mut bullets: Query<(&Bullet, &mut Transform)>,
-    time: Res<Time>,
-    game_time: Res<GameTime>,
-) {
+fn bullet_movement(mut bullets: Query<(&Bullet, &mut Transform)>, game_time: Res<GameTime>) {
     for (bullet, mut transform) in &mut bullets {
-        transform.translation += bullet.direction * bullet.speed * game_time.delta_secs(&time);
+        transform.translation += bullet.direction * bullet.speed * game_time.delta_secs();
     }
 }
 
 fn bullet_despawn(
     mut commands: Commands,
     mut bullets: Query<(Entity, &mut Bullet)>,
-    time: Res<Time>,
     game_time: Res<GameTime>,
 ) {
     for (entity, mut bullet) in &mut bullets {
-        bullet.lifetime_timer.tick(game_time.delta(&time));
+        bullet.lifetime_timer.tick(game_time.delta());
         if bullet.lifetime_timer.just_finished() && bullet.pierce > 0 {
             commands.entity(entity).insert(Despawn);
         }

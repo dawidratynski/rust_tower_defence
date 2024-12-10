@@ -153,11 +153,10 @@ fn tower_shooting(
     mut commands: Commands,
     mut towers: Query<(&mut Tower, &Transform)>,
     enemies: Query<&GlobalTransform, With<Enemy>>,
-    time: Res<Time>,
     game_time: Res<GameTime>,
 ) {
     for (mut tower, transform) in &mut towers {
-        tower.shooting_timer.tick(game_time.delta(&time));
+        tower.shooting_timer.tick(game_time.delta());
         if tower.shooting_timer.just_finished() {
             let bullet_spawn_point = transform.translation + tower.bullet_spawn_offset;
 

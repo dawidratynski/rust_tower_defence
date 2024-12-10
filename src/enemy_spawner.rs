@@ -89,7 +89,6 @@ fn spawn_enemy(
 fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
-    time: Res<Time>,
     game_time: Res<GameTime>,
     mut player: ResMut<Player>,
     enemies: Query<(), With<Enemy>>,
@@ -113,7 +112,7 @@ fn enemy_spawn_system(
     }
 
     for segment in &mut wave.segments {
-        segment.segment_timer.tick(game_time.delta(&time));
+        segment.segment_timer.tick(game_time.delta());
         if segment.segment_timer.just_finished() {
             if segment.count == 0 {
                 segment.segment_timer.pause();
