@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::tower::TowerType;
+use crate::tower_types::TowerType;
 
 pub const TOWER_BUTTON_BG_DEFAULT: Color = Color::srgb(0.15, 0.15, 0.15);
 pub const TOWER_BUTTON_BG_HOVER: Color = Color::srgb(0.25, 0.25, 0.25);

@@ -1,23 +1,22 @@
+use bevy::prelude::*;
+
 use std::time::Duration;
 
-use crate::*;
+use crate::enemy::{Enemy, EnemyTemplate};
+use crate::game_state::GameState;
+use crate::game_time::GameTime;
 
 // This will be changed to a resource, and spawnpoints will be separated out
 
 #[derive(Component)]
 pub struct EnemySpawner {
-    pub power_scale: f32,
     pub waves: Vec<EnemyWave>,
     pub wave_ix: usize,
 }
 
 impl EnemySpawner {
     pub fn new(waves: Vec<EnemyWave>) -> EnemySpawner {
-        EnemySpawner {
-            power_scale: 1.0,
-            waves,
-            wave_ix: 0,
-        }
+        EnemySpawner { waves, wave_ix: 0 }
     }
 }
 
@@ -40,7 +39,6 @@ impl EnemyWave {
 pub struct EnemyWaveSegment {
     pub template: EnemyTemplate,
     pub count: u32,
-    pub wait_before: f32,
     pub wait_between: f32,
     pub wait_after: f32,
     pub segment_timer: Timer,
@@ -57,7 +55,6 @@ impl EnemyWaveSegment {
         EnemyWaveSegment {
             template,
             count,
-            wait_before,
             wait_between,
             wait_after,
             segment_timer: Timer::new(Duration::from_secs_f32(wait_before), TimerMode::Repeating),

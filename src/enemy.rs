@@ -1,4 +1,12 @@
-use crate::*;
+use bevy::color::palettes::css;
+use bevy::prelude::*;
+
+use crate::despawn::Despawn;
+use crate::game_config::TILE_SIZE;
+use crate::game_state::GameState;
+use crate::game_time::GameTime;
+use crate::map::EnemyPath;
+use crate::utils::vec2_from_tile_tuple;
 
 #[derive(Component)]
 pub struct Enemy {
@@ -9,6 +17,7 @@ pub struct Enemy {
     pub path_stage: u32,
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub enum EnemyTemplate {
     Basic,

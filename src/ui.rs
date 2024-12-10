@@ -1,6 +1,12 @@
-use crate::*;
+use bevy::prelude::*;
 
+use crate::enemy_spawner::EnemySpawner;
+use crate::game_state::GameState;
+use crate::tower::SelectedTower;
+use crate::tower_types::TowerType;
 use crate::ui_config::*;
+
+// This module will likely need a rework or at least refactoring
 
 pub struct UIPlugin;
 

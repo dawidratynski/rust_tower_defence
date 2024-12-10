@@ -1,7 +1,14 @@
+use bevy::color::palettes::css;
+use bevy::prelude::*;
 use bevy::utils::hashbrown::{HashMap, HashSet};
+
 use std::f32::consts::PI;
 
-use crate::*;
+use crate::enemy::EnemyTemplate;
+use crate::enemy_spawner::{EnemySpawner, EnemyWave, EnemyWaveSegment};
+use crate::game_config::TILE_SIZE;
+use crate::player_base::PlayerBase;
+use crate::utils::vec3_from_tile;
 
 #[derive(Bundle)]
 pub struct TileBundle {

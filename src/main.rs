@@ -1,7 +1,6 @@
 pub use bevy::prelude::*;
 
-use bevy::color::palettes::css;
-use bevy::math::FloatOrd;
+use game_config::*;
 
 mod bullet;
 mod camera;
@@ -14,23 +13,10 @@ mod game_time;
 mod map;
 mod player_base;
 mod tower;
+mod tower_types;
 mod ui;
 mod ui_config;
 mod utils;
-
-pub use bullet::*;
-pub use camera::*;
-pub use despawn::*;
-pub use enemy::*;
-pub use enemy_spawner::*;
-pub use game_config::*;
-pub use game_state::*;
-pub use game_time::*;
-pub use map::*;
-pub use player_base::*;
-pub use tower::*;
-pub use ui::*;
-pub use utils::*;
 
 fn main() {
     App::new()
@@ -48,16 +34,16 @@ fn main() {
                     ..default()
                 }),
         )
-        .add_plugins(CameraPlugin)
-        .add_plugins(UIPlugin)
-        .add_plugins(MapPlugin)
-        .add_plugins(TowerPlugin)
-        .add_plugins(BulletPlugin)
-        .add_plugins(EnemyPlugin)
-        .add_plugins(EnemySpawnerPlugin)
-        .add_plugins(PlayerBasePlugin)
-        .add_plugins(DespawnPlugin)
-        .add_plugins(GameStatePlugin)
-        .add_plugins(GameTimePlugin)
+        .add_plugins(camera::CameraPlugin)
+        .add_plugins(ui::UIPlugin)
+        .add_plugins(map::MapPlugin)
+        .add_plugins(tower::TowerPlugin)
+        .add_plugins(bullet::BulletPlugin)
+        .add_plugins(enemy::EnemyPlugin)
+        .add_plugins(enemy_spawner::EnemySpawnerPlugin)
+        .add_plugins(player_base::PlayerBasePlugin)
+        .add_plugins(despawn::DespawnPlugin)
+        .add_plugins(game_state::GameStatePlugin)
+        .add_plugins(game_time::GameTimePlugin)
         .run();
 }

@@ -1,4 +1,8 @@
-use crate::*;
+use bevy::prelude::*;
+
+use crate::despawn::Despawn;
+use crate::enemy::Enemy;
+use crate::game_time::GameTime;
 
 #[derive(Component)]
 pub struct Bullet {

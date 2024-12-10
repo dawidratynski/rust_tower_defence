@@ -1,6 +1,15 @@
+use bevy::color::palettes::css;
+use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::*;
+use crate::game_config::*;
+use crate::game_state::GameState;
+use crate::game_time::GameTime;
+use crate::map::TileData;
+use crate::map::TileMap;
+use crate::tower::spawn_tower;
+use crate::tower::SelectedTower;
+use crate::utils::get_tile;
 
 const CAMERA_SPEED: f32 = 500.0;
 const CAMERA_ROTATION_SPEED: f32 = 1.5;
