@@ -13,6 +13,7 @@ mod game_time;
 mod map;
 mod player_base;
 mod tower;
+mod tower_placement;
 mod tower_types;
 mod ui;
 mod ui_config;
@@ -45,5 +46,6 @@ fn main() {
         .add_plugins(despawn::DespawnPlugin)
         .add_plugins(game_state::GameStatePlugin)
         .add_plugins(game_time::GameTimePlugin)
+        .add_plugins(tower_placement::TowerPlacementPlugin)
         .run();
 }
