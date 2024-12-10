@@ -10,7 +10,7 @@ use crate::game_time::GameTime;
 
 // TODO: Separate spawn location from wave logic (e.g. spawnpoints)
 // TODO: EnemySpawner should become a resource
-// TODO: Redesign wave system -> either end after all enemies are defeated 
+// TODO: Redesign wave system -> either end after all enemies are defeated
 //       or use a constant rolling-round approach
 
 pub struct EnemySpawnerPlugin;
