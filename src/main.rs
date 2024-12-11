@@ -29,7 +29,6 @@ fn main() {
                     primary_window: Some(Window {
                         title: GAME_WINDOW_TITLE.to_owned(),
                         resolution: (WINDOW_WIDTH, WINDOW_HEIGHT).into(),
-                        resizable: false,
                         ..default()
                     }),
                     ..default()
