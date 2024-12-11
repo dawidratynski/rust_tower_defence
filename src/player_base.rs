@@ -23,7 +23,6 @@ fn base_collision(
 ) {
     for base in &bases {
         for (enemy_entity, enemy_transfrom, mut enemy_data) in &mut enemies {
-            enemy_data.health += 0.0001;
             if Vec2::distance(base.translation.xy(), enemy_transfrom.translation.xy()) < 10.0 {
                 game_state.health -= enemy_data.base_damage;
                 if game_state.health == 0 {
