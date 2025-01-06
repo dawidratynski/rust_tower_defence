@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 use crate::bullet::Bullet;
 use crate::game_config::TILE_SIZE;
+use crate::status_effect::slowdown;
 use crate::tower::Tower;
 
 #[derive(Component, Clone, Copy, PartialEq)]
@@ -71,6 +72,7 @@ impl TowerType {
                     damage: 5.0,
                     pierce: 1,
                     already_hit: vec![],
+                    status_effects: vec![slowdown()],
                 },
             ),
             TowerType::Sniper => (
@@ -83,6 +85,7 @@ impl TowerType {
                     damage: 50.0,
                     pierce: 1,
                     already_hit: vec![],
+                    status_effects: vec![],
                 },
             ),
             TowerType::Minigun => (
@@ -95,6 +98,7 @@ impl TowerType {
                     damage: 1.0,
                     pierce: 1,
                     already_hit: vec![],
+                    status_effects: vec![],
                 },
             ),
             TowerType::Piercer => (
@@ -107,6 +111,7 @@ impl TowerType {
                     damage: 5.0,
                     pierce: 10,
                     already_hit: vec![],
+                    status_effects: vec![],
                 },
             ),
         }

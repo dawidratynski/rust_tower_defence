@@ -6,6 +6,7 @@ use crate::game_config::TILE_SIZE;
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
 use crate::map::EnemyPath;
+use crate::status_effect::CanHaveStatusEffects;
 use crate::utils::vec2_from_tile_tuple;
 
 pub struct EnemyPlugin;
@@ -13,7 +14,8 @@ pub struct EnemyPlugin;
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, enemy_movement)
-            .add_systems(Update, enemy_death);
+            .add_systems(Update, enemy_death)
+            .add_systems(PreUpdate, apply_status_effects);
     }
 }
 
@@ -37,7 +39,10 @@ pub enum EnemyTemplate {
 }
 
 impl Enemy {
-    pub fn from_template(template: EnemyTemplate, power_scale: f32) -> (Enemy, Sprite) {
+    pub fn from_template(
+        template: EnemyTemplate,
+        power_scale: f32,
+    ) -> (Enemy, Sprite, CanHaveStatusEffects<Enemy>) {
         match template {
             EnemyTemplate::Basic => (
                 Enemy {
@@ -48,6 +53,7 @@ impl Enemy {
                     path_stage: 0,
                 },
                 Sprite::from_color(css::MEDIUM_VIOLET_RED, Vec2::splat(TILE_SIZE * 0.4)),
+                CanHaveStatusEffects::new(),
             ),
             EnemyTemplate::Strong => (
                 Enemy {
@@ -58,6 +64,7 @@ impl Enemy {
                     path_stage: 0,
                 },
                 Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE * 0.55)),
+                CanHaveStatusEffects::new(),
             ),
             EnemyTemplate::Tank => (
                 Enemy {
@@ -68,6 +75,7 @@ impl Enemy {
                     path_stage: 0,
                 },
                 Sprite::from_color(css::BLACK, Vec2::splat(TILE_SIZE * 0.7)),
+                CanHaveStatusEffects::new(),
             ),
             EnemyTemplate::Fast => (
                 Enemy {
@@ -78,6 +86,7 @@ impl Enemy {
                     path_stage: 0,
                 },
                 Sprite::from_color(css::DARK_SLATE_GRAY, Vec2::splat(TILE_SIZE * 0.5)),
+                CanHaveStatusEffects::new(),
             ),
             EnemyTemplate::Boss => (
                 Enemy {
@@ -88,6 +97,7 @@ impl Enemy {
                     path_stage: 0,
                 },
                 Sprite::from_color(css::DARK_VIOLET, Vec2::splat(TILE_SIZE * 0.9)),
+                CanHaveStatusEffects::new(),
             ),
         }
     }
@@ -121,6 +131,32 @@ fn enemy_death(
             game_state.money += enemy.money_for_kill;
             enemy.money_for_kill = 0;
             commands.entity(entity).insert(Despawn);
+        }
+    }
+}
+
+fn apply_status_effects(
+    mut enemies: Query<(&mut Enemy, &mut CanHaveStatusEffects<Enemy>)>,
+    game_time: Res<GameTime>,
+) {
+    for (mut enemy, mut status_effects) in &mut enemies {
+        for status in &mut status_effects.status_effects {
+            if status.duration <= 0.0 {
+                // Expired status
+                continue;
+            }
+            if !status.already_applied {
+                (status.apply)(&mut enemy);
+                status.already_applied = true;
+                continue;
+            }
+
+            status.duration -= game_time.delta_secs();
+            if status.duration <= 0.0 {
+                (status.finish)(&mut enemy);
+            } else {
+                (status.tick)(&mut enemy, game_time.delta_secs());
+            }
         }
     }
 }

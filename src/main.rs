@@ -12,6 +12,7 @@ mod game_state;
 mod game_time;
 mod map;
 mod player_base;
+mod status_effect;
 mod tower;
 mod tower_placement;
 mod tower_types;

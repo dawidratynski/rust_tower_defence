@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::despawn::Despawn;
 use crate::enemy::Enemy;
 use crate::game_time::GameTime;
+use crate::status_effect::{CanHaveStatusEffects, StatusBuilder};
 
 pub struct BulletPlugin;
 
@@ -23,15 +24,21 @@ pub struct Bullet {
     pub damage: f32,
     pub pierce: i32,
     pub already_hit: Vec<Entity>,
+    pub status_effects: Vec<StatusBuilder<Enemy>>,
 }
 
 fn bullet_hit(
     mut commands: Commands,
     mut bullets: Query<(Entity, &GlobalTransform, &mut Bullet)>,
-    mut enemies: Query<(Entity, &mut Enemy, &GlobalTransform)>,
+    mut enemies: Query<(
+        Entity,
+        &mut Enemy,
+        &mut CanHaveStatusEffects<Enemy>,
+        &GlobalTransform,
+    )>,
 ) {
     for (bullet_entity, bullet_transform, mut bullet_data) in &mut bullets {
-        for (enemy_entity, mut enemy, enemy_transform) in &mut enemies {
+        for (enemy_entity, mut enemy, mut status_effects, enemy_transform) in &mut enemies {
             if Vec2::distance(
                 bullet_transform.translation().xy(),
                 enemy_transform.translation().xy(),
@@ -44,6 +51,9 @@ fn bullet_hit(
                 enemy.health -= bullet_data.damage;
                 if bullet_data.pierce <= 0 {
                     commands.entity(bullet_entity).insert(Despawn);
+                }
+                for status in &bullet_data.status_effects {
+                    status_effects.status_effects.push(status());
                 }
             }
         }
