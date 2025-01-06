@@ -18,6 +18,7 @@ mod tower_types;
 mod ui;
 mod ui_config;
 mod utils;
+mod victory_defeat;
 
 fn main() {
     App::new()

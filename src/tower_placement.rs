@@ -39,6 +39,7 @@ fn tower_placement_system(
         // This prevents placing towers under buttons
         || !interaction_query.is_empty()
         || selected_tower.get_cost() > game_state.money
+        || game_state.game_ended
     {
         return;
     }

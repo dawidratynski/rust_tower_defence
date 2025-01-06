@@ -5,6 +5,7 @@ use std::time::Duration;
 use crate::enemy::{Enemy, EnemyTemplate};
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
+use crate::victory_defeat::victory;
 
 // This module needs a rewrite / refactor
 
@@ -90,22 +91,26 @@ fn spawn_enemy(
 fn enemy_spawn_system(
     mut commands: Commands,
     mut spawners: Query<(&mut EnemySpawner, &Transform)>,
-    game_time: Res<GameTime>,
+    mut game_time: ResMut<GameTime>,
     mut game_state: ResMut<GameState>,
     enemies: Query<(), With<Enemy>>,
 ) {
+    if game_state.game_ended {
+        return;
+    }
+
     let (mut spawner, transform) = spawners.single_mut();
     let wave_ix = spawner.wave_ix;
 
-    if wave_ix == spawner.waves.len() {
-        eprintln!("You won!");
-        unimplemented!();
-    }
-
+    let wave_count = spawner.waves.len();
     let wave = &mut spawner.waves[wave_ix];
 
     if wave.segments_left == 0 {
         if enemies.is_empty() {
+            if wave_ix == wave_count - 1 {
+                victory(&mut commands, &mut game_time, &mut game_state);
+                return;
+            }
             game_state.money += wave.reward;
             spawner.wave_ix += 1;
         }

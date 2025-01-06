@@ -4,7 +4,7 @@ use std::time::Duration;
 
 const TIME_SPEEDUP_KEY: KeyCode = KeyCode::KeyC;
 const PAUSE_KEY: KeyCode = KeyCode::KeyP;
-const TIME_SPEEDUP_SCALE: f32 = 2.0;
+const TIME_SPEEDUP_SCALE: f32 = 10.0;
 
 pub struct GameTimePlugin;
 
@@ -14,6 +14,7 @@ impl Plugin for GameTimePlugin {
             scale: 1.0,
             delta_secs: 0.0,
             paused: false,
+            game_finished: false,
         })
         .add_systems(Startup, setup_pause_ui)
         .add_systems(PreUpdate, update_game_time)
@@ -27,6 +28,7 @@ pub struct GameTime {
     pub scale: f32,
     delta_secs: f32,
     paused: bool,
+    game_finished: bool,
 }
 
 impl GameTime {
@@ -40,6 +42,11 @@ impl GameTime {
 
     pub fn delta(&self) -> Duration {
         Duration::from_secs_f32(self.delta_secs())
+    }
+
+    pub fn end_game(&mut self) {
+        self.game_finished = true;
+        self.paused = true;
     }
 }
 
@@ -63,7 +70,7 @@ fn handle_pause(
     mut game_time: ResMut<GameTime>,
     mut query: Query<&mut Node, With<PauseOverlay>>,
 ) {
-    if keys.just_pressed(PAUSE_KEY) {
+    if keys.just_pressed(PAUSE_KEY) && !game_time.game_finished {
         game_time.paused = !game_time.paused;
 
         for mut ui_element in &mut query {

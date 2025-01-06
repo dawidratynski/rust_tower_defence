@@ -7,6 +7,7 @@ impl Plugin for GameStatePlugin {
         app.insert_resource(GameState {
             money: 100,
             health: 100,
+            game_ended: false,
         });
     }
 }
@@ -15,4 +16,5 @@ impl Plugin for GameStatePlugin {
 pub struct GameState {
     pub money: u32,
     pub health: u32,
+    pub game_ended: bool,
 }
