@@ -57,15 +57,10 @@ async fn calculate_enemy_paths(
     let inf = 1000000;
     let mut grid = [[inf; 31]; 31];
     let mut next_tile = HashMap::new();
-    
+
     let root = (12, 5);
 
-    let directions = [
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0),
-    ];
+    let directions = [(0, 1), (1, 0), (0, -1), (-1, 0)];
 
     next_tile.insert(root, root);
     grid[(root.0 + 15) as usize][(root.1 + 15) as usize] = 0;
@@ -78,13 +73,13 @@ async fn calculate_enemy_paths(
             let nx = x + dx;
             let ny = y + dy;
 
-            if nx < -15 || nx > 15 || ny < -15 || ny > 15 {
+            if !(-15..=15).contains(&nx) || !(-15..=15).contains(&ny) {
                 continue;
             }
 
             let grid_nx = (nx + 15) as usize;
             let grid_ny = (ny + 15) as usize;
-            
+
             if grid[grid_nx][grid_ny] == inf {
                 grid[grid_nx][grid_ny] = grid[(x + 15) as usize][(y + 15) as usize] + 1;
                 next_tile.insert((nx, ny), (x, y));
@@ -97,4 +92,3 @@ async fn calculate_enemy_paths(
 
     next_tile
 }
-
