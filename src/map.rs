@@ -112,7 +112,7 @@ fn spawn_basic_scene(
             let tile_bundle = TileBundle {
                 sprite: Sprite::from_color(css::GRAY, Vec2::splat(TILE_SIZE * 0.8)),
                 tile_data: TileData {
-                    empty: true,
+                    empty: (x_tile, y_tile) != (1, 5) && (x_tile, y_tile) != (12, 5),
                     prepared: false,
                 },
             };
