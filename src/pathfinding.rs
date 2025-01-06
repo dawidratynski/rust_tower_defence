@@ -1,4 +1,4 @@
-use std::task::Context;
+use std::{collections::VecDeque, task::Context};
 
 use bevy::{
     prelude::*,
@@ -51,14 +51,50 @@ pub fn update_pathfinding(
     pathfinding_promise.future = Some(future);
 }
 
-// Calculate-heavy task
 async fn calculate_enemy_paths(
-    _obstacle_map: HashSet<(i32, i32)>,
+    obstacle_map: HashSet<(i32, i32)>,
 ) -> HashMap<(i32, i32), (i32, i32)> {
-    let next_tile = HashMap::new();
-    let mut x = 7;
-    for i in 1..1000000000 {
-        x = (x * i) % 17;
+    let inf = 1000000;
+    let mut grid = [[inf; 31]; 31];
+    let mut next_tile = HashMap::new();
+    
+    let root = (12, 5);
+
+    let directions = [
+        (0, 1),
+        (1, 0),
+        (0, -1),
+        (-1, 0),
+    ];
+
+    next_tile.insert(root, root);
+    grid[(root.0 + 15) as usize][(root.1 + 15) as usize] = 0;
+
+    let mut queue = VecDeque::new();
+    queue.push_back(root);
+
+    while let Some((x, y)) = queue.pop_front() {
+        for &(dx, dy) in &directions {
+            let nx = x + dx;
+            let ny = y + dy;
+
+            if nx < -15 || nx > 15 || ny < -15 || ny > 15 {
+                continue;
+            }
+
+            let grid_nx = (nx + 15) as usize;
+            let grid_ny = (ny + 15) as usize;
+            
+            if grid[grid_nx][grid_ny] == inf {
+                grid[grid_nx][grid_ny] = grid[(x + 15) as usize][(y + 15) as usize] + 1;
+                next_tile.insert((nx, ny), (x, y));
+                if !obstacle_map.contains(&(nx, ny)) {
+                    queue.push_back((nx, ny));
+                }
+            }
+        }
     }
+
     next_tile
 }
+

@@ -104,8 +104,8 @@ fn spawn_basic_scene(
         PlayerBase,
     ));
 
-    for x_tile in -15..15 {
-        for y_tile in -15..15 {
+    for x_tile in -15..=15 {
+        for y_tile in -15..=15 {
             enemy_next_tile
                 .next_tile
                 .insert((x_tile, y_tile), (x_tile + 1, y_tile));

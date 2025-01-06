@@ -72,10 +72,10 @@ fn tower_placement_system(
 
         if let Some(tile_id) = tile_id_opt {
             if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-                if tile_data.empty && !tile_data.prepared && game_state.money >= 10 {
+                if tile_data.empty && !tile_data.prepared && game_state.money >= 1 {
                     sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
                     tile_data.prepared = true;
-                    game_state.money -= 10;
+                    game_state.money -= 1;
                     obstacles.insert(tile_position);
                     update_pathfinding(pathfinding_promise, obstacles.into());
                 } else if tile_data.empty
