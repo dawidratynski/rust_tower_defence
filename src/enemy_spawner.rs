@@ -26,11 +26,16 @@ impl Plugin for EnemySpawnerPlugin {
 pub struct EnemySpawner {
     pub waves: Vec<EnemyWave>,
     pub wave_ix: usize,
+    pub tile: (i32, i32),
 }
 
 impl EnemySpawner {
-    pub fn new(waves: Vec<EnemyWave>) -> EnemySpawner {
-        EnemySpawner { waves, wave_ix: 0 }
+    pub fn new(waves: Vec<EnemyWave>, tile: (i32, i32)) -> EnemySpawner {
+        EnemySpawner {
+            waves,
+            wave_ix: 0,
+            tile,
+        }
     }
 }
 
@@ -81,9 +86,10 @@ fn spawn_enemy(
     transform: &Transform,
     template: EnemyTemplate,
     power_scale: f32,
+    tile: (i32, i32),
 ) {
     commands.spawn((
-        Enemy::from_template(template, power_scale),
+        Enemy::from_template(template, power_scale, tile),
         Transform::from_xyz(transform.translation.x, transform.translation.y, 5.0),
     ));
 }
@@ -101,6 +107,7 @@ fn enemy_spawn_system(
 
     let (mut spawner, transform) = spawners.single_mut();
     let wave_ix = spawner.wave_ix;
+    let tile = spawner.tile;
 
     let wave_count = spawner.waves.len();
     let wave = &mut spawner.waves[wave_ix];
@@ -136,7 +143,7 @@ fn enemy_spawn_system(
                         .set_duration(Duration::from_secs_f32(segment.wait_between));
                 }
 
-                spawn_enemy(&mut commands, transform, segment.template, 1.0);
+                spawn_enemy(&mut commands, transform, segment.template, 1.0, tile);
             }
         }
     }

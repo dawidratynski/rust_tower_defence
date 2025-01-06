@@ -5,7 +5,7 @@ use crate::despawn::Despawn;
 use crate::game_config::TILE_SIZE;
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
-use crate::map::EnemyPath;
+use crate::map::EnemyNextTile;
 use crate::status_effect::CanHaveStatusEffects;
 use crate::utils::vec2_from_tile_tuple;
 
@@ -25,7 +25,8 @@ pub struct Enemy {
     pub health: f32,
     pub base_damage: u32,
     pub money_for_kill: u32,
-    pub path_stage: u32,
+    pub current_tile: (i32, i32),
+    pub next_tile: (i32, i32),
 }
 
 #[allow(dead_code)] // Unused enemy templates are ok
@@ -42,6 +43,7 @@ impl Enemy {
     pub fn from_template(
         template: EnemyTemplate,
         power_scale: f32,
+        tile: (i32, i32),
     ) -> (Enemy, Sprite, CanHaveStatusEffects<Enemy>) {
         match template {
             EnemyTemplate::Basic => (
@@ -50,7 +52,8 @@ impl Enemy {
                     health: 10.0 * power_scale,
                     base_damage: 1,
                     money_for_kill: 1,
-                    path_stage: 0,
+                    current_tile: tile,
+                    next_tile: tile,
                 },
                 Sprite::from_color(css::MEDIUM_VIOLET_RED, Vec2::splat(TILE_SIZE * 0.4)),
                 CanHaveStatusEffects::new(),
@@ -61,7 +64,8 @@ impl Enemy {
                     health: 25.0 * power_scale,
                     base_damage: 3,
                     money_for_kill: 5,
-                    path_stage: 0,
+                    current_tile: tile,
+                    next_tile: tile,
                 },
                 Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE * 0.55)),
                 CanHaveStatusEffects::new(),
@@ -72,7 +76,8 @@ impl Enemy {
                     health: 60.0 * power_scale,
                     base_damage: 5,
                     money_for_kill: 10,
-                    path_stage: 0,
+                    current_tile: tile,
+                    next_tile: tile,
                 },
                 Sprite::from_color(css::BLACK, Vec2::splat(TILE_SIZE * 0.7)),
                 CanHaveStatusEffects::new(),
@@ -83,7 +88,8 @@ impl Enemy {
                     health: 20.0 * power_scale,
                     base_damage: 5,
                     money_for_kill: 5,
-                    path_stage: 0,
+                    current_tile: tile,
+                    next_tile: tile,
                 },
                 Sprite::from_color(css::DARK_SLATE_GRAY, Vec2::splat(TILE_SIZE * 0.5)),
                 CanHaveStatusEffects::new(),
@@ -94,7 +100,8 @@ impl Enemy {
                     health: 250.0 * power_scale,
                     base_damage: 100,
                     money_for_kill: 100,
-                    path_stage: 0,
+                    current_tile: tile,
+                    next_tile: tile,
                 },
                 Sprite::from_color(css::DARK_VIOLET, Vec2::splat(TILE_SIZE * 0.9)),
                 CanHaveStatusEffects::new(),
@@ -105,18 +112,19 @@ impl Enemy {
 
 fn enemy_movement(
     mut enemies: Query<(&mut Enemy, &mut Transform)>,
-    path: Res<EnemyPath>,
+    next_tile: Res<EnemyNextTile>,
     game_time: Res<GameTime>,
 ) {
     for (mut enemy, mut transform) in &mut enemies {
         let movement_distance = enemy.speed * game_time.delta_secs();
-        let delta_to_goal = vec2_from_tile_tuple(path.nodes[enemy.path_stage as usize])
-            - transform.translation.xy();
+        let goal = vec2_from_tile_tuple(enemy.next_tile);
+        let delta_to_goal = goal - transform.translation.xy();
 
         if delta_to_goal.length() > movement_distance {
             transform.translation += delta_to_goal.normalize().extend(0.0) * movement_distance;
-        } else if enemy.path_stage < path.nodes.len() as u32 - 1 {
-            enemy.path_stage += 1;
+        } else {
+            enemy.next_tile = next_tile[&enemy.current_tile];
+            enemy.current_tile = enemy.next_tile;
         }
     }
 }
