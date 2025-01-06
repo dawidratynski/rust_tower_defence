@@ -1,8 +1,7 @@
 use bevy::color::palettes::css;
 use bevy::prelude::*;
-use bevy::utils::hashbrown::HashMap;
+use bevy::utils::hashbrown::{HashMap, HashSet};
 
-use rand::Rng;
 use std::f32::consts::PI;
 
 use crate::enemy::EnemyTemplate;
@@ -21,6 +20,9 @@ impl Plugin for MapPlugin {
         .insert_resource(EnemyNextTile {
             next_tile: HashMap::new(),
         })
+        .insert_resource(ObstacleMap {
+            tile_map: HashSet::new(),
+        })
         .add_systems(Startup, spawn_basic_scene);
     }
 }
@@ -34,11 +36,17 @@ pub struct TileBundle {
 #[derive(Component)]
 pub struct TileData {
     pub empty: bool,
+    pub prepared: bool,
 }
 
 #[derive(Resource)]
 pub struct TileMap {
     pub tile_map: HashMap<(i32, i32), Entity>,
+}
+
+#[derive(Resource, Deref, DerefMut)]
+pub struct ObstacleMap {
+    pub tile_map: HashSet<(i32, i32)>,
 }
 
 #[derive(Resource, Deref, DerefMut)]
@@ -49,6 +57,7 @@ pub struct EnemyNextTile {
 fn spawn_basic_scene(
     mut commands: Commands,
     mut tile_map: ResMut<TileMap>,
+    mut obstacle_map: ResMut<ObstacleMap>,
     mut enemy_next_tile: ResMut<EnemyNextTile>,
 ) {
     commands.spawn((
@@ -86,24 +95,26 @@ fn spawn_basic_scene(
         ),
     ));
 
+    obstacle_map.insert((1, 5));
+    obstacle_map.insert((12, 5));
+
     commands.spawn((
         Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)),
         Transform::from_translation(vec3_from_tile(12, 5, 0.0)),
         PlayerBase,
     ));
 
-
-    let mut rng = rand::thread_rng();
-
     for x_tile in -15..15 {
         for y_tile in -15..15 {
             enemy_next_tile
                 .next_tile
-                .insert((x_tile, y_tile), (x_tile + rng.gen_range(-1..=1), y_tile + rng.gen_range(-1..=1)));
+                .insert((x_tile, y_tile), (x_tile + 1, y_tile));
             let tile_bundle = TileBundle {
                 sprite: Sprite::from_color(css::GRAY, Vec2::splat(TILE_SIZE * 0.8)),
-                tile_data: TileData { empty: true },
-                
+                tile_data: TileData {
+                    empty: true,
+                    prepared: false,
+                },
             };
 
             let tile_id = commands

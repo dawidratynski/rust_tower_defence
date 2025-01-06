@@ -11,6 +11,7 @@ mod game_config;
 mod game_state;
 mod game_time;
 mod map;
+mod pathfinding;
 mod player_base;
 mod status_effect;
 mod tower;
@@ -48,5 +49,6 @@ fn main() {
         .add_plugins(game_state::GameStatePlugin)
         .add_plugins(game_time::GameTimePlugin)
         .add_plugins(tower_placement::TowerPlacementPlugin)
+        .add_plugins(pathfinding::PathfindingPlugin)
         .run();
 }

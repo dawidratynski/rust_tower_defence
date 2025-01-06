@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.15.0", features = ["dynamic_linking"] }
+futures = "0.3.31"
 rand = "0.8.5"
 
 [profile.dev]

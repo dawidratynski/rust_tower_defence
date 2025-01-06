@@ -4,8 +4,11 @@ use bevy::window::PrimaryWindow;
 
 use crate::game_config::*;
 use crate::game_state::GameState;
+use crate::map::ObstacleMap;
 use crate::map::TileData;
 use crate::map::TileMap;
+use crate::pathfinding::update_pathfinding;
+use crate::pathfinding::PathfindingPromise;
 use crate::tower::spawn_tower;
 use crate::tower::SelectedTower;
 use crate::utils::get_tile;
@@ -30,6 +33,8 @@ fn tower_placement_system(
     selected_tower_opt: Res<SelectedTower>,
     mut game_state: ResMut<GameState>,
     mut commands: Commands,
+    mut obstacles: ResMut<ObstacleMap>,
+    pathfinding_promise: ResMut<PathfindingPromise>,
 ) {
     let Some(selected_tower) = selected_tower_opt.0 else {
         return;
@@ -67,7 +72,16 @@ fn tower_placement_system(
 
         if let Some(tile_id) = tile_id_opt {
             if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-                if tile_data.empty && game_state.money >= selected_tower.get_cost() {
+                if tile_data.empty && !tile_data.prepared && game_state.money >= 10 {
+                    sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
+                    tile_data.prepared = true;
+                    game_state.money -= 10;
+                    obstacles.insert(tile_position);
+                    update_pathfinding(pathfinding_promise, obstacles.into());
+                } else if tile_data.empty
+                    && tile_data.prepared
+                    && game_state.money >= selected_tower.get_cost()
+                {
                     sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
                     tile_data.empty = false;
                     game_state.money -= selected_tower.get_cost();

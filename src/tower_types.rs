@@ -18,7 +18,7 @@ impl TowerType {
     pub fn get_tower(&self) -> (Sprite, Tower) {
         match self {
             TowerType::Basic => (
-                Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE)),
+                Sprite::from_color(css::FIRE_BRICK, Vec2::splat(TILE_SIZE) * 0.8),
                 Tower {
                     shooting_timer: Timer::from_seconds(1.5, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
@@ -28,7 +28,7 @@ impl TowerType {
                 },
             ),
             TowerType::Sniper => (
-                Sprite::from_color(css::DARK_GREEN, Vec2::splat(TILE_SIZE)),
+                Sprite::from_color(css::DARK_GREEN, Vec2::splat(TILE_SIZE) * 0.8),
                 Tower {
                     shooting_timer: Timer::from_seconds(5.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
@@ -38,7 +38,7 @@ impl TowerType {
                 },
             ),
             TowerType::Minigun => (
-                Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE)),
+                Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE) * 0.8),
                 Tower {
                     shooting_timer: Timer::from_seconds(0.2, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
@@ -48,7 +48,7 @@ impl TowerType {
                 },
             ),
             TowerType::Piercer => (
-                Sprite::from_color(css::DARK_CYAN, Vec2::splat(TILE_SIZE)),
+                Sprite::from_color(css::DARK_CYAN, Vec2::splat(TILE_SIZE) * 0.8),
                 Tower {
                     shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
