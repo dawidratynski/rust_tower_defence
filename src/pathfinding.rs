@@ -8,7 +8,7 @@ use bevy::{
 };
 use futures::task::noop_waker_ref;
 
-use crate::map::{EnemyNextTile, ObstacleMap, TileData, TileMap};
+use crate::map::{EnemyNextTile, ObstacleMap, TileData, TileMap, MAP_SIZE, PLAYER_BASE_TILE, SPAWNER_TILE};
 
 #[derive(Resource)]
 pub struct PathfindingPromise {
@@ -55,9 +55,8 @@ fn mark_path_tiles(
             sprite.color = bevy::prelude::Color::Srgba(css::GRAY);
         }
     }
-    let mut loc = (1, 5);
-    let root = (12, 5);
-    while loc != root {
+    let mut loc = SPAWNER_TILE;
+    while loc != PLAYER_BASE_TILE {
         let tile_id = tile_map.tile_map.get(&loc).unwrap();
         let (mut sprite, _tile_data) = tiles.get_mut(*tile_id).unwrap();
         sprite.color = bevy::prelude::Color::Srgba(css::LIGHT_STEEL_BLUE);
@@ -79,23 +78,23 @@ pub fn update_pathfinding(
 async fn calculate_enemy_paths(
     obstacle_map: HashSet<(i32, i32)>,
 ) -> HashMap<(i32, i32), (i32, i32)> {
-    let inf = 1000000;
-    let mut grid = [[inf; 31]; 31];
+    let inf = 2000000000;
+    let mut grid = [[inf; (2 * MAP_SIZE + 1) as usize]; (2 * MAP_SIZE + 1) as usize];
     let mut next_tile = HashMap::new();
 
-    let base = (12, 5);
+    let base = PLAYER_BASE_TILE;
 
     let directions = [(0, 1), (1, 0), (0, -1), (-1, 0)];
 
     // Prevent crash if enemy gets trapped
-    for x in -15..=15 {
-        for y in -15..=15 {
+    for x in -MAP_SIZE..=MAP_SIZE {
+        for y in -MAP_SIZE..=MAP_SIZE {
             next_tile.insert((x, y), base);
         }
     }
 
     next_tile.insert(base, base);
-    grid[(base.0 + 15) as usize][(base.1 + 15) as usize] = 0;
+    grid[(base.0 + MAP_SIZE) as usize][(base.1 + MAP_SIZE) as usize] = 0;
 
     let mut queue = VecDeque::new();
     queue.push_back(base);
@@ -105,15 +104,15 @@ async fn calculate_enemy_paths(
             let nx = x + dx;
             let ny = y + dy;
 
-            if !(-15..=15).contains(&nx) || !(-15..=15).contains(&ny) {
+            if !(-MAP_SIZE..=MAP_SIZE).contains(&nx) || !(-MAP_SIZE..=MAP_SIZE).contains(&ny) {
                 continue;
             }
 
-            let grid_nx = (nx + 15) as usize;
-            let grid_ny = (ny + 15) as usize;
+            let grid_nx = (nx + MAP_SIZE) as usize;
+            let grid_ny = (ny + MAP_SIZE) as usize;
 
             if grid[grid_nx][grid_ny] == inf {
-                grid[grid_nx][grid_ny] = grid[(x + 15) as usize][(y + 15) as usize] + 1;
+                grid[grid_nx][grid_ny] = grid[(x + MAP_SIZE) as usize][(y + MAP_SIZE) as usize] + 1;
                 next_tile.insert((nx, ny), (x, y));
                 if !obstacle_map.contains(&(nx, ny)) {
                     queue.push_back((nx, ny));

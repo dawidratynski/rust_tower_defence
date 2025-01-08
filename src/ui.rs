@@ -200,7 +200,7 @@ fn spawn_tower_buttons_ui(ui_parent: &mut ChildBuilder) {
                 Text::new(format!(
                     "{:<8} {}",
                     match tower_type {
-                        TowerType::Basic => "Basic",
+                        TowerType::Freeze => "Freeze",
                         TowerType::Minigun => "Minigun",
                         TowerType::Piercer => "Pierce",
                         TowerType::Sniper => "Sniper",

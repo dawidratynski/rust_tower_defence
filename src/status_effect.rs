@@ -28,14 +28,14 @@ pub struct StatusBuilder<T>(pub Box<dyn Fn() -> StatusEffect<T> + Sync + Send>);
 
 pub fn slowdown() -> StatusBuilder<Enemy> {
     StatusBuilder(Box::new(|| StatusEffect {
-        duration: 10.0,
+        duration: 3.0,
         already_applied: false,
         apply: Box::new(|enemy: &mut Enemy| {
-            enemy.speed *= 0.8;
+            enemy.speed *= 0.6;
         }),
         tick: Box::new(|_, _| {}),
         finish: Box::new(|enemy: &mut Enemy| {
-            enemy.speed /= 0.8;
+            enemy.speed /= 0.6;
         }),
     }))
 }

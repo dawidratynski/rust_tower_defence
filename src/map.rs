@@ -10,6 +10,11 @@ use crate::game_config::TILE_SIZE;
 use crate::player_base::PlayerBase;
 use crate::utils::vec3_from_tile;
 
+pub const PLAYER_BASE_TILE: (i32, i32) = (5, -5);
+pub const SPAWNER_TILE: (i32, i32) = (-5, 5);
+pub const MAP_SIZE: i32 = 15;
+
+
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
@@ -62,7 +67,7 @@ fn spawn_basic_scene(
 ) {
     commands.spawn((
         Sprite::from_color(css::DARK_RED, Vec2::splat(TILE_SIZE * 0.6)),
-        Transform::from_translation(vec3_from_tile(1, 5, 0.0))
+        Transform::from_translation(vec3_from_tile(SPAWNER_TILE.0, SPAWNER_TILE.1, 0.0))
             .with_rotation(Quat::from_rotation_z(PI / 4.0)),
         EnemySpawner::new(
             vec![
@@ -91,28 +96,28 @@ fn spawn_basic_scene(
                     50,
                 ),
             ],
-            (1, 5),
+            SPAWNER_TILE,
         ),
     ));
 
-    obstacle_map.insert((1, 5));
-    obstacle_map.insert((12, 5));
+    obstacle_map.insert(SPAWNER_TILE);
+    obstacle_map.insert(PLAYER_BASE_TILE);
 
     commands.spawn((
         Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE)),
-        Transform::from_translation(vec3_from_tile(12, 5, 0.0)),
+        Transform::from_translation(vec3_from_tile(PLAYER_BASE_TILE.0, PLAYER_BASE_TILE.1, 0.0)),
         PlayerBase,
     ));
 
-    for x_tile in -15..=15 {
-        for y_tile in -15..=15 {
+    for x_tile in -MAP_SIZE..=MAP_SIZE {
+        for y_tile in -MAP_SIZE..=MAP_SIZE {
             enemy_next_tile
                 .next_tile
                 .insert((x_tile, y_tile), (x_tile + 1, y_tile));
             let tile_bundle = TileBundle {
                 sprite: Sprite::from_color(css::GRAY, Vec2::splat(TILE_SIZE * 0.8)),
                 tile_data: TileData {
-                    empty: (x_tile, y_tile) != (1, 5) && (x_tile, y_tile) != (12, 5),
+                    empty: (x_tile, y_tile) != SPAWNER_TILE && (x_tile, y_tile) != PLAYER_BASE_TILE,
                     prepared: false,
                 },
             };

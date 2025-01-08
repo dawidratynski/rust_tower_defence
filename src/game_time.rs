@@ -4,7 +4,7 @@ use std::time::Duration;
 
 const TIME_SPEEDUP_KEY: KeyCode = KeyCode::KeyC;
 const PAUSE_KEY: KeyCode = KeyCode::KeyP;
-const TIME_SPEEDUP_SCALE: f32 = 10.0;
+const TIME_SPEEDUP_SCALE: f32 = 4.0;
 
 pub struct GameTimePlugin;
 

@@ -5,7 +5,7 @@ pub struct GameStatePlugin;
 impl Plugin for GameStatePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(GameState {
-            money: 1000,
+            money: 200,
             health: 100,
             game_ended: false,
         });

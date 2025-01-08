@@ -12,7 +12,7 @@ pub const TOWER_BUTTON_BORDER_SELECTED: Color = Color::BLACK;
 
 // This controls which tower types are on the buttons
 pub const BUTTON_TOWER_TYPES: [TowerType; 4] = [
-    TowerType::Basic,
+    TowerType::Freeze,
     TowerType::Minigun,
     TowerType::Piercer,
     TowerType::Sniper,

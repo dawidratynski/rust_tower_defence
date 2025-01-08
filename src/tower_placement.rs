@@ -70,19 +70,21 @@ fn tower_placement_system(
         let tile_position = get_tile(game_cursor_position.x, game_cursor_position.y);
         let tile_id_opt = tile_map.tile_map.get(&tile_position);
 
+        let platform_cost = 5;
+
         if let Some(tile_id) = tile_id_opt {
             if let Ok((mut sprite, mut tile_data)) = tiles.get_mut(*tile_id) {
-                if tile_data.empty && !tile_data.prepared && game_state.money >= 1 {
+                if tile_data.empty && !tile_data.prepared && game_state.money >= platform_cost {
                     sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
                     tile_data.prepared = true;
-                    game_state.money -= 1;
+                    game_state.money -= platform_cost;
                     obstacles.insert(tile_position);
                     update_pathfinding(pathfinding_promise, obstacles.into());
                 } else if tile_data.empty
                     && tile_data.prepared
                     && game_state.money >= selected_tower.get_cost()
                 {
-                    sprite.color = bevy::prelude::Color::Srgba(css::AZURE);
+                    sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
                     tile_data.empty = false;
                     game_state.money -= selected_tower.get_cost();
                     spawn_tower(&mut commands, tile_position, selected_tower);
