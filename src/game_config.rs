@@ -1,4 +1,4 @@
-pub const GAME_WINDOW_TITLE: &str = "Unnamed Rust Tower Defence Game - Prototype v1";
+pub const GAME_WINDOW_TITLE: &str = "Rust Tower Defence";
 
 pub const SPRITE_RESOLUTION: u16 = 16;
 pub const SPRITE_SCALE: u16 = 4;
