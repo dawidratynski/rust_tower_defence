@@ -14,7 +14,6 @@ pub const PLAYER_BASE_TILE: (i32, i32) = (5, -5);
 pub const SPAWNER_TILE: (i32, i32) = (-5, 5);
 pub const MAP_SIZE: i32 = 15;
 
-
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin {

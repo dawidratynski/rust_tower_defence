@@ -8,7 +8,9 @@ use bevy::{
 };
 use futures::task::noop_waker_ref;
 
-use crate::map::{EnemyNextTile, ObstacleMap, TileData, TileMap, MAP_SIZE, PLAYER_BASE_TILE, SPAWNER_TILE};
+use crate::map::{
+    EnemyNextTile, ObstacleMap, TileData, TileMap, MAP_SIZE, PLAYER_BASE_TILE, SPAWNER_TILE,
+};
 
 #[derive(Resource)]
 pub struct PathfindingPromise {
@@ -75,6 +77,9 @@ pub fn update_pathfinding(
     pathfinding_promise.future = Some(future);
 }
 
+// Async here is used by to indicate to AsyncComputeTaskPool that this computation
+// may take longer than one frame and should be treated like an async function
+#[allow(clippy::unused_async)]
 async fn calculate_enemy_paths(
     obstacle_map: HashSet<(i32, i32)>,
 ) -> HashMap<(i32, i32), (i32, i32)> {

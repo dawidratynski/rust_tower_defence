@@ -15,14 +15,14 @@ pub enum TowerType {
 }
 
 impl TowerType {
-    pub fn get_tower(&self) -> (Sprite, Tower) {
+    pub fn get_tower(self) -> (Sprite, Tower) {
         match self {
             TowerType::Freeze => (
                 Sprite::from_color(css::LIGHT_BLUE, Vec2::splat(TILE_SIZE) * 0.6),
                 Tower {
                     shooting_timer: Timer::from_seconds(1.5, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
-                    tower_type: *self,
+                    tower_type: self,
                     spread: 0.0,
                     range: 200.0,
                 },
@@ -32,7 +32,7 @@ impl TowerType {
                 Tower {
                     shooting_timer: Timer::from_seconds(5.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
-                    tower_type: *self,
+                    tower_type: self,
                     spread: 0.0,
                     range: 50000.0,
                 },
@@ -42,7 +42,7 @@ impl TowerType {
                 Tower {
                     shooting_timer: Timer::from_seconds(0.2, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
-                    tower_type: *self,
+                    tower_type: self,
                     spread: 0.2,
                     range: 200.0,
                 },
@@ -52,7 +52,7 @@ impl TowerType {
                 Tower {
                     shooting_timer: Timer::from_seconds(1.0, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
-                    tower_type: *self,
+                    tower_type: self,
                     spread: 0.0,
                     range: 400.0,
                 },
@@ -60,7 +60,7 @@ impl TowerType {
         }
     }
 
-    pub fn get_bullet(&self, direction: Vec3) -> (Sprite, Bullet) {
+    pub fn get_bullet(self, direction: Vec3) -> (Sprite, Bullet) {
         match self {
             TowerType::Freeze => (
                 Sprite::from_color(css::LIGHT_BLUE, Vec2::splat(TILE_SIZE * 0.25)),
@@ -117,12 +117,12 @@ impl TowerType {
         }
     }
 
-    pub fn get_cost(&self) -> u32 {
+    pub fn get_cost(self) -> u32 {
         match self {
             TowerType::Freeze => 15,
             TowerType::Sniper => 30,
             TowerType::Minigun => 50,
-            TowerType::Piercer => 15,
+            TowerType::Piercer => 20,
         }
     }
 }

@@ -178,7 +178,7 @@ fn spawn_game_state_ui(ui_parent: &mut ChildBuilder) {
 }
 
 fn spawn_tower_buttons_ui(ui_parent: &mut ChildBuilder) {
-    for tower_type in BUTTON_TOWER_TYPES.iter() {
+    for tower_type in &BUTTON_TOWER_TYPES {
         ui_parent
             .spawn((
                 Button,

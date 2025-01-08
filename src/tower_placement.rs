@@ -36,14 +36,9 @@ fn tower_placement_system(
     mut obstacles: ResMut<ObstacleMap>,
     pathfinding_promise: ResMut<PathfindingPromise>,
 ) {
-    let Some(selected_tower) = selected_tower_opt.0 else {
-        return;
-    };
-
     if !mouse_button_input.just_pressed(MouseButton::Left)
         // This prevents placing towers under buttons
         || !interaction_query.is_empty()
-        || selected_tower.get_cost() > game_state.money
         || game_state.game_ended
     {
         return;
@@ -80,14 +75,20 @@ fn tower_placement_system(
                     game_state.money -= platform_cost;
                     obstacles.insert(tile_position);
                     update_pathfinding(pathfinding_promise, obstacles.into());
-                } else if tile_data.empty
-                    && tile_data.prepared
-                    && game_state.money >= selected_tower.get_cost()
-                {
-                    sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
-                    tile_data.empty = false;
-                    game_state.money -= selected_tower.get_cost();
-                    spawn_tower(&mut commands, tile_position, selected_tower);
+                } else {
+                    let Some(selected_tower) = selected_tower_opt.0 else {
+                        return;
+                    };
+
+                    if tile_data.empty
+                        && tile_data.prepared
+                        && game_state.money >= selected_tower.get_cost()
+                    {
+                        sprite.color = bevy::prelude::Color::Srgba(css::DARK_SLATE_GRAY);
+                        tile_data.empty = false;
+                        game_state.money -= selected_tower.get_cost();
+                        spawn_tower(&mut commands, tile_position, selected_tower);
+                    }
                 }
             }
         }
