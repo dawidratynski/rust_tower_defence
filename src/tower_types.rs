@@ -20,7 +20,7 @@ impl TowerType {
             TowerType::Freeze => (
                 Sprite::from_color(css::LIGHT_BLUE, Vec2::splat(TILE_SIZE) * 0.6),
                 Tower {
-                    shooting_timer: Timer::from_seconds(1.5, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(0.8, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: self,
                     spread: 0.0,
@@ -40,7 +40,7 @@ impl TowerType {
             TowerType::Minigun => (
                 Sprite::from_color(css::DARK_MAGENTA, Vec2::splat(TILE_SIZE) * 0.6),
                 Tower {
-                    shooting_timer: Timer::from_seconds(0.2, TimerMode::Repeating),
+                    shooting_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
                     bullet_spawn_offset: Vec3::new(0.0, 0.0, 0.1),
                     tower_type: self,
                     spread: 0.2,
@@ -63,14 +63,14 @@ impl TowerType {
     pub fn get_bullet(self, direction: Vec3) -> (Sprite, Bullet) {
         match self {
             TowerType::Freeze => (
-                Sprite::from_color(css::LIGHT_BLUE, Vec2::splat(TILE_SIZE * 0.25)),
+                Sprite::from_color(css::LIGHT_BLUE, Vec2::splat(TILE_SIZE * 0.4)),
                 Bullet {
-                    lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
+                    lifetime_timer: Timer::from_seconds(1.5, TimerMode::Once),
                     direction,
                     speed: 1500.0,
-                    hitbox_radius: 30.0,
-                    damage: 3.0,
-                    pierce: 1,
+                    hitbox_radius: 60.0,
+                    damage: 0.0,
+                    pierce: 3,
                     already_hit: vec![],
                     status_effects: vec![slowdown()],
                 },
@@ -82,14 +82,14 @@ impl TowerType {
                     direction,
                     speed: 3000.0,
                     hitbox_radius: 50.0,
-                    damage: 50.0,
+                    damage: 80.0,
                     pierce: 1,
                     already_hit: vec![],
                     status_effects: vec![],
                 },
             ),
             TowerType::Minigun => (
-                Sprite::from_color(css::DARK_GRAY, Vec2::splat(TILE_SIZE * 0.25)),
+                Sprite::from_color(css::DARK_GRAY, Vec2::splat(TILE_SIZE * 0.1)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(2.5, TimerMode::Once),
                     direction,
@@ -102,13 +102,13 @@ impl TowerType {
                 },
             ),
             TowerType::Piercer => (
-                Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE * 0.25)),
+                Sprite::from_color(css::DARK_BLUE, Vec2::splat(TILE_SIZE * 0.3)),
                 Bullet {
                     lifetime_timer: Timer::from_seconds(10.0, TimerMode::Once),
                     direction,
                     speed: 500.0,
                     hitbox_radius: 50.0,
-                    damage: 5.0,
+                    damage: 7.0,
                     pierce: 10,
                     already_hit: vec![],
                     status_effects: vec![],
@@ -119,10 +119,10 @@ impl TowerType {
 
     pub fn get_cost(self) -> u32 {
         match self {
-            TowerType::Freeze => 15,
-            TowerType::Sniper => 30,
-            TowerType::Minigun => 50,
-            TowerType::Piercer => 20,
+            TowerType::Freeze => 80,
+            TowerType::Sniper => 120,
+            TowerType::Minigun => 120,
+            TowerType::Piercer => 150,
         }
     }
 }

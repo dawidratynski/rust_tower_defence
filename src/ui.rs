@@ -6,8 +6,6 @@ use crate::tower::SelectedTower;
 use crate::tower_types::TowerType;
 use crate::ui_config::*;
 
-// TODO: Refactor spawn_ui
-
 pub struct UIPlugin;
 
 impl Plugin for UIPlugin {
@@ -114,7 +112,7 @@ fn spawn_game_state_ui(ui_parent: &mut ChildBuilder) {
     ui_parent
         .spawn((
             Node {
-                width: Val::Px(150.0),
+                width: Val::Px(180.0),
                 height: Val::Px(65.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -135,7 +133,7 @@ fn spawn_game_state_ui(ui_parent: &mut ChildBuilder) {
     ui_parent
         .spawn((
             Node {
-                width: Val::Px(150.0),
+                width: Val::Px(180.0),
                 height: Val::Px(65.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -157,7 +155,7 @@ fn spawn_game_state_ui(ui_parent: &mut ChildBuilder) {
     ui_parent
         .spawn((
             Node {
-                width: Val::Px(150.0),
+                width: Val::Px(180.0),
                 height: Val::Px(65.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
@@ -183,7 +181,7 @@ fn spawn_tower_buttons_ui(ui_parent: &mut ChildBuilder) {
             .spawn((
                 Button,
                 Node {
-                    width: Val::Px(150.0),
+                    width: Val::Px(180.0),
                     height: Val::Px(65.0),
                     border: UiRect::all(Val::Px(5.0)),
                     flex_direction: FlexDirection::Row,

@@ -5,7 +5,7 @@ use bevy::utils::hashbrown::{HashMap, HashSet};
 use std::f32::consts::PI;
 
 use crate::enemy::EnemyTemplate;
-use crate::enemy_spawner::{EnemySpawner, EnemyWave, EnemyWaveSegment};
+use crate::enemy_spawner::{random_enemy_waves, EnemySpawner, EnemyWave, EnemyWaveSegment};
 use crate::game_config::TILE_SIZE;
 use crate::player_base::PlayerBase;
 use crate::utils::vec3_from_tile;
@@ -64,39 +64,42 @@ fn spawn_basic_scene(
     mut obstacle_map: ResMut<ObstacleMap>,
     mut enemy_next_tile: ResMut<EnemyNextTile>,
 ) {
+    // Hardcoded beggining waves
+    let mut enemy_waves = vec![
+        EnemyWave::new(
+            vec![EnemyWaveSegment::new(
+                EnemyTemplate::Basic,
+                10,
+                0.5,
+                1.0,
+                3.0,
+            )],
+            200,
+        ),
+        EnemyWave::new(
+            vec![
+                EnemyWaveSegment::new(EnemyTemplate::Basic, 10, 0.5, 2.0, 1.0),
+                EnemyWaveSegment::new(EnemyTemplate::Strong, 3, 3.0, 4.0, 1.0),
+            ],
+            200,
+        ),
+        EnemyWave::new(
+            vec![
+                EnemyWaveSegment::new(EnemyTemplate::Fast, 50, 0.5, 0.6, 0.1),
+                EnemyWaveSegment::new(EnemyTemplate::Boss, 1, 5.0, 5.0, 0.1),
+            ],
+            200,
+        ),
+    ];
+
+    // Extra semi-random waves
+    enemy_waves.extend(random_enemy_waves(7, 200, 1.5));
+
     commands.spawn((
         Sprite::from_color(css::DARK_RED, Vec2::splat(TILE_SIZE * 0.6)),
         Transform::from_translation(vec3_from_tile(SPAWNER_TILE.0, SPAWNER_TILE.1, 0.0))
             .with_rotation(Quat::from_rotation_z(PI / 4.0)),
-        EnemySpawner::new(
-            vec![
-                EnemyWave::new(
-                    vec![EnemyWaveSegment::new(
-                        EnemyTemplate::Basic,
-                        10,
-                        0.5,
-                        1.0,
-                        3.0,
-                    )],
-                    50,
-                ),
-                EnemyWave::new(
-                    vec![
-                        EnemyWaveSegment::new(EnemyTemplate::Basic, 10, 0.5, 2.0, 1.0),
-                        EnemyWaveSegment::new(EnemyTemplate::Strong, 3, 3.0, 4.0, 1.0),
-                    ],
-                    50,
-                ),
-                EnemyWave::new(
-                    vec![
-                        EnemyWaveSegment::new(EnemyTemplate::Fast, 50, 0.5, 0.5, 0.1),
-                        EnemyWaveSegment::new(EnemyTemplate::Boss, 3, 5.0, 5.0, 0.1),
-                    ],
-                    50,
-                ),
-            ],
-            SPAWNER_TILE,
-        ),
+        EnemySpawner::new(enemy_waves, SPAWNER_TILE),
     ));
 
     obstacle_map.insert(SPAWNER_TILE);

@@ -48,7 +48,7 @@ impl Enemy {
         match template {
             EnemyTemplate::Basic => (
                 Enemy {
-                    speed: 55.0,
+                    speed: 60.0,
                     health: 10.0 * power_scale,
                     base_damage: 1,
                     money_for_kill: 1,
@@ -60,10 +60,10 @@ impl Enemy {
             ),
             EnemyTemplate::Strong => (
                 Enemy {
-                    speed: 50.0,
+                    speed: 55.0,
                     health: 25.0 * power_scale,
                     base_damage: 3,
-                    money_for_kill: 5,
+                    money_for_kill: 2,
                     current_tile: tile,
                     next_tile: tile,
                 },
@@ -72,10 +72,10 @@ impl Enemy {
             ),
             EnemyTemplate::Tank => (
                 Enemy {
-                    speed: 40.0,
+                    speed: 50.0,
                     health: 60.0 * power_scale,
                     base_damage: 5,
-                    money_for_kill: 10,
+                    money_for_kill: 3,
                     current_tile: tile,
                     next_tile: tile,
                 },
@@ -84,10 +84,10 @@ impl Enemy {
             ),
             EnemyTemplate::Fast => (
                 Enemy {
-                    speed: 100.0,
+                    speed: 120.0,
                     health: 20.0 * power_scale,
                     base_damage: 5,
-                    money_for_kill: 5,
+                    money_for_kill: 3,
                     current_tile: tile,
                     next_tile: tile,
                 },
@@ -96,10 +96,10 @@ impl Enemy {
             ),
             EnemyTemplate::Boss => (
                 Enemy {
-                    speed: 30.0,
+                    speed: 40.0,
                     health: 250.0 * power_scale,
-                    base_damage: 100,
-                    money_for_kill: 100,
+                    base_damage: 1000,
+                    money_for_kill: 10,
                     current_tile: tile,
                     next_tile: tile,
                 },

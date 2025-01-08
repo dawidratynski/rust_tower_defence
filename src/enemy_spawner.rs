@@ -1,18 +1,12 @@
 use bevy::prelude::*;
 
+use rand::Rng;
 use std::time::Duration;
 
 use crate::enemy::{Enemy, EnemyTemplate};
 use crate::game_state::GameState;
 use crate::game_time::GameTime;
 use crate::victory_defeat::victory;
-
-// This module needs a rewrite / refactor
-
-// TODO: Separate spawn location from wave logic (e.g. spawnpoints)
-// TODO: EnemySpawner should become a resource
-// TODO: Redesign wave system -> either end after all enemies are defeated
-//       or use a constant rolling-round approach
 
 pub struct EnemySpawnerPlugin;
 
@@ -147,4 +141,82 @@ fn enemy_spawn_system(
             }
         }
     }
+}
+
+pub fn random_enemy_waves(count: usize, start_points: i32, point_scale: f64) -> Vec<EnemyWave> {
+    let mut rng = rand::thread_rng();
+    let mut result = vec![];
+
+    let mut points = start_points as f64;
+    for _ in 0..count {
+        let mut points_left = points;
+        let mut segments = vec![];
+
+        while points_left > 0.0 {
+            let luck = rng.gen_range(1..=10);
+
+            if luck <= 3 && points_left >= 400.0 {
+                points_left -= 400.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Boss,
+                    40,
+                    0.01,
+                    0.5,
+                    2.0,
+                ))
+            } else if luck <= 5 && points_left >= 200.0 {
+                points_left -= 200.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Fast,
+                    100,
+                    5.0,
+                    0.2,
+                    2.0,
+                ))
+            } else if luck <= 6 && points_left >= 100.0 {
+                points_left -= 100.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Boss,
+                    10,
+                    0.1,
+                    2.0,
+                    10.0,
+                ))
+            } else if luck <= 7 && points_left >= 50.0 {
+                points_left -= 50.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Tank,
+                    10,
+                    2.0,
+                    2.0,
+                    3.0,
+                ))
+            } else if luck <= 9 && points_left >= 30.0 {
+                points_left -= 30.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Strong,
+                    10,
+                    0.1,
+                    1.5,
+                    1.0,
+                ))
+            } else {
+                points_left -= 10.0;
+                segments.push(EnemyWaveSegment::new(
+                    EnemyTemplate::Basic,
+                    10,
+                    5.0,
+                    1.0,
+                    1.0,
+                ))
+            }
+        }
+
+        let reward = (points / 2.0).floor() as u32;
+        result.push(EnemyWave::new(segments, reward));
+
+        points *= point_scale;
+    }
+
+    result
 }
